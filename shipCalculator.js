@@ -8,17 +8,41 @@ class shipCalculator {
 
         //selects block palette 
         this.selectBlockPalette(false)
+
+
+        // default subsytem stats
+        this.generatedEnergyMult = 1
     }
 
     changeBuildingKnowledge(newBK) {
         this.buildingKnowledge = newBK;
     }
+    
+    //sets the PPLimit based on building Knowledge level
+    setPPLimitToBK() {
+        if (this.buildingKnowledge = "Iron") {this.PPLimit = 128}
+        else if (this.buildingKnowledge = "Titanium") {this.PPLimit = 800}
+        else if (this.buildingKnowledge = "Naonite") {this.PPLimit = 2000}
+        else if (this.buildingKnowledge = "Trinium") {this.PPLimit = 5000}
+        else if (this.buildingKnowledge = "Xanion") {this.PPLimit = 12500}
+        else if (this.buildingKnowledge = "Ogonite") {this.PPLimit = 31250}
+        else if (this.buildingKnowledge = "Avorion") {this.PPLimit = 78125}
+    }
+
+    //manually insert PPLimit
+    changePPLimit(newLimit) {
+        this.PPLimit = newLimit;
+    }
+
+
+
+    //block palette
 
     // currently doesnt have palettes to pull from
     // could make custom palettes too
     // will be similar to material class in blockStats
-    //light will find the most weight effcient per blocks unique output
-    //pp efficient will select the material with highest unique output
+    // light will find the most weight effcient per blocks unique output
+    // pp efficient will select the material with highest unique output
 
     //selects the palette of blocks to calculate stats with based on the Building Knowledge Level
     selectBlockPalette(lightWeight) {
@@ -45,20 +69,14 @@ class shipCalculator {
         }
     }
 
-    
-    //sets the PPLimit based on building Knowledge level
-    setPPLimitToBK() {
-        if (this.buildingKnowledge = "Iron") {this.PPLimit = 128}
-        else if (this.buildingKnowledge = "Titanium") {this.PPLimit = 800}
-        else if (this.buildingKnowledge = "Naonite") {this.PPLimit = 2000}
-        else if (this.buildingKnowledge = "Trinium") {this.PPLimit = 5000}
-        else if (this.buildingKnowledge = "Xanion") {this.PPLimit = 12500}
-        else if (this.buildingKnowledge = "Ogonite") {this.PPLimit = 31250}
-        else if (this.buildingKnowledge = "Avorion") {this.PPLimit = 78125}
-    }
 
-    //manually insert PPLimit
-    changePPLimit(newLimit) {
-        this.PPLimit = newLimit;
+
+    // calculate block count
+    // pp/((Gen/Req)+1) = Gen block count * (Gen/Req)
+    // Gen block count * (Gen/Req) = other block count
+    calBlockCount (block, gen) {
+        let ratio = gen.other/block.req;
+        let genCount = this.PPLimit/(ratio+1);
+        let blockCount = genCount*ratio;
     }
 }
