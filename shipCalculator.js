@@ -4,14 +4,14 @@ class shipCalculator {
         this.buildingKnowledge = buildingKnowledge;
 
         // set default PPLimit
-        this.setPPLimitToBK()
+        this.setPPLimitToBK();
 
         //selects block palette 
-        this.selectBlockPalette(false)
+        this.selectBlockPalette(false);
 
 
         // default subsytem stats
-        this.generatedEnergyMult = 1
+        this.generatedEnergyMult = 1;
     }
 
     changeBuildingKnowledge(newBK) {
