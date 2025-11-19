@@ -2,16 +2,16 @@
 class block {
     constructor(name, cost$, costM, health, weight, procPower, reqEnergy, other, otherType) {
         this.name = name;
-        this.cost$ = cost$;
-        this.costM = costM;
-        this.health = health;
-        this.weight = weight;
-        this.procPower = procPower;
-        this.reqEnergy = reqEnergy;
+        this.cost$ = number(cost$);
+        this.costM = number(costM);
+        this.health = number(health);
+        this.weight = number(weight);
+        this.procPower = number(procPower);
+        this.reqEnergy = number(reqEnergy);
         // other is used for unique block elements
         // eg power generators generated power
         // or cargo holds storage capicity
-        this.other = other;
+        this.other = number(other);
         this.otherType = otherType;
     }
 }
