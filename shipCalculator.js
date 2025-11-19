@@ -13,6 +13,9 @@ class shipCalculator {
 
         // default subsytem stats
         this.generatedEnergyMult = 1;
+
+        //init default allocation varibles
+        this.shieldPP;
     }
 
     changeBuildingKnowledge(newBK) {
@@ -80,7 +83,46 @@ class shipCalculator {
     }
 
 
-    
+    //shields
+    shieldCalculator() {
+        //check block palette
+
+        //if shieldGenerator is unset or no power generators have been set
+        if (this.palette.shieldGenerator == 'unset' || (this.palette.generator == 'unset' || this.palette.solarPanel == 'unset')) {console.log('shieldCalculator error: palette unset')}
+        else {
+            //checks if shield generator is providing shield strength
+            if (this.palette.shieldGenerator.other > 0) {
+                //shield generator as variable
+                let sGen = this.palette.shieldGenerator
+
+                //shield gen is valid checking power source
+                if (this.palette.generator.other > 0) {let gen = this.palette.generator /*set generator variable*/}
+                //generator failed attempting solarPanel as backup
+                else {
+                    console.log('Generator output <= 0')
+                    console.log('Switching to Solar Panels')
+                    if (this.palette.solarPanel.other > 0) {let gen = this.palette.solarPanel /*set generator variable*/}
+                    // no power gen avaliable - exits function
+                    else {
+                        console.log('Solar Panel output <= 0');
+                        console.log('shieldCalculator: No available power generators');
+                        return false;
+                    }
+                }
+                //shield generator and power sources are valid
+
+                //TO DO
+                //write out logic 
+                //set up outputs
+
+            }
+            //failed shield generator test - exits function
+            else {
+                console.log('Shield Generator output <= 0');
+                return false;
+            }
+        }
+    }
 }
 
 import allBlocks from './blockStats.js';
@@ -132,7 +174,7 @@ class palette {
             if (loopEscape == undefined) {loopEscape = material}
 
             //test block validity
-            if (blockList[material][type].cost$ == N/A) {
+            if (blockList[material][type].cost$ == 'N/A') {
                 //check optimization type
                 if (opti == 'processingPower') {
                     //save temp variables for faster calc
