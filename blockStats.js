@@ -1,6 +1,6 @@
 // universal block type to hold stats
 class block {
-    constructor(name, cost$, costM, health, weight, procPower, reqEnergy, other, otherType) {
+    constructor(name, cost$, costM, health, weight, procPower, reqEnergy, other, otherType, reqMechanic, reqEngineer) {
         this.name = name;
         this.cost$ = number(cost$);
         this.costM = number(costM);
@@ -13,6 +13,10 @@ class block {
         // or cargo holds storage capicity
         this.other = number(other);
         this.otherType = otherType;
+    
+        //required crew per block
+        this.reqCrewMechanic = number(reqMechanic);
+        this.reqCrewEngineer = number(reqEngineer);
     }
 }
 
