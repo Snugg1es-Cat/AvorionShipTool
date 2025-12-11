@@ -93,14 +93,15 @@ class shipCalculator {
             if (this.palette.shieldGenerator.other > 0) {
                 //shield generator as variable
                 let sGen = this.palette.shieldGenerator
+                let eGen;
 
                 //shield gen is valid checking power source
-                if (this.palette.generator.other > 0) {let eGen = this.palette.generator /*set generator variable*/}
+                if (this.palette.generator.other > 0) {eGen = this.palette.generator /*set generator variable*/}
                 //generator failed attempting solarPanel as backup
                 else {
                     console.log('Generator output <= 0')
                     console.log('Switching to Solar Panels')
-                    if (this.palette.solarPanel.other > 0) {let eGen = this.palette.solarPanel /*set generator variable*/}
+                    if (this.palette.solarPanel.other > 0) {eGen = this.palette.solarPanel /*set generator variable*/}
                     // no energy gen avaliable - 1st exit of function
                     else {
                         console.log('Solar Panel output <= 0');
@@ -163,9 +164,9 @@ class shipCalculator {
 
 //this class holds the current chosen blocks to calculate stats off
 //blocks are set by their material
-//needs to be feed a list of every block
+//needs to be fed a list of every block
 class palette {
-    constructor(blockList){
+    constructor(blockList) {
         this.blockList = blockList;
 
         //init values
@@ -176,7 +177,7 @@ class palette {
         this.thruster = 'unset';
         this.directionalThruster = 'unset';
         this.gyroArray = 'unset';
-        this.inertialDampner = 'unset';
+        this.inertialDampener = 'unset';
         this.hangar = 'unset';
         this.dock = 'unset';
         this.flightRecorder = 'unset';
@@ -270,7 +271,7 @@ class palette {
         setType('thruster', material, BK, opti);
         setType('directionalThruster', material, BK, opti);
         setType('gyroArray', material, BK, opti);
-        setType('inertialDampner', material, BK, opti);
+        setType('inertialDampener', material, BK, opti);
         setType('hangar', material, BK, opti);
         setType('dock', material, BK, opti);
         setType('flightRecorder', material, BK, opti);
