@@ -83,11 +83,11 @@ class shipCalculator {
     }
 
     //shields
-    shieldCalculator() {
+    shieldCalcHandler() {
         //check block palette
 
         //if shieldGenerator is unset or no power generators have been set
-        if (this.palette.shieldGenerator == 'unset' || (this.palette.generator == 'unset' || this.palette.solarPanel == 'unset')) {console.log('shieldCalculator error: palette unset')}
+        if (this.palette.shieldGenerator == 'unset' || (this.palette.generator == 'unset' || this.palette.solarPanel == 'unset')) {console.log('shieldCalcHandler error: palette unset')}
         else {
             //checks if shield generator is providing shield strength
             if (this.palette.shieldGenerator.other > 0) {
@@ -105,7 +105,7 @@ class shipCalculator {
                     // no energy gen avaliable - 1st exit of function
                     else {
                         console.log('Solar Panel output <= 0');
-                        console.log('shieldCalculator: No available power generators');
+                        console.log('shieldCalcHandler: No available power generators');
                         return false;
                     }
                 }
@@ -158,7 +158,48 @@ class shipCalculator {
         if (engiBool) { crewType = 'reqCrewEngineer'; }
         return block[crewType] * blockCount;
     }
-}
+
+    engineCalculator(ppLimit, engineBlock, energySource, crewQuartersBlock, shieldBlock, shieldCount, thrusterBlock, thrusterCount) {
+    // engineer polution
+    // Crew Quarters to house the engineers responsible for shields and thrusters
+    // add 0.01 because there is a small base engi requirement I believe to be 0.01
+    let polutedEngiQuartersBlocks = calcCrewQuarters(calcCrewNeeded(shieldBlock, shieldCount, true) + calcCrewNeeded(thrusterBlock, thrusterCount, true) + 0.01);
+    // power generators to power engi crew quarters
+    let polutedEngiEnergySourceBlocks = (polutedEngiQuartersBlocks*crewQuartersBlock.reqEnergy) / energySource.other;
+
+
+    //new processing power limit which ignores the engineers required from shields
+    let newPPLimt = ppLimit - (polutedEngiQuartersBlocks + polutedEngiEnergySourceBlocks);
+
+    // the ratio between engines and crew quarters
+    // (10/19) is crew quarter density which should be apart of block stats but isnt in this test 
+    let ratioEtoCQ = (1/90) / (10/19)/*engineBlock.reqCrewEngineer / crewQuartersBlock.other*/
+
+    
+    let percentageCQ = ratioEtoCQ / (1+ratioEtoCQ)
+    let percentageE = 1 / (1+ratioEtoCQ)
+    let ratioEGenToECQ = energySource.other / (percentageE*engineBlock.reqEnergy + percentageCQ*crewQuartersBlock.reqEnergy)
+
+
+    //energy
+    // the ratio between energy generators to the engine to crew quarter ratio
+    // adjusts engine to crew quater ratio by their energy requirements
+    // let ratioEGenToECQ = energySource.other / (engineBlock.reqEnergy + ratioEtoCQ*crewQuartersBlock.reqEnergy)
+    
+    // expand ratios to fill PP limit
+    let eGenCount = newPPLimt/(ratioEGenToECQ+1);
+    let engineAndCrewQCount = eGenCount*ratioEGenToECQ;
+        
+    let engineCount = engineAndCrewQCount * percentageE
+    let crewQuartersCount = engineAndCrewQCount * percentageCQ
+
+    //add shield gens / crew
+    eGenCount += polutedEngiEnergySourceBlocks;
+    crewQuartersCount += polutedEngiQuartersBlocks;
+
+    return [eGenCount, engineCount, crewQuartersCount];
+    };
+};
 
 
 
