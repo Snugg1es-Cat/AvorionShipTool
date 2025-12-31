@@ -8,12 +8,70 @@
 </head>
 <body>
   <main>
+    <h1>Avorion Ship Building Tool</h1>
+    <div id="blockCalc">
+      <h2>Block Calculator</h2>
+      <ul>
+        <li>
+          <!--Drop Down for materials-->
+          <form action="materialForm" method="POST">
+            <label for="material">Material</label>
+            <select name="material" id="material">
+              <option value="Iron">Iron</option>
+              <option value="Titanium">Titanium</option>
+              <option value="Naonite">Naonite</option>
+              <option value="Trinium">Trinium</option>
+              <option value="Xanion">Xanion</option>
+              <option value="Ogonite">Ogonite</option>
+              <option value="Avorion">Avorion</option>
+            </select>
+          </form>
+        </li>
+        <li>
+          <!--Drop Down for blocks-->
+          <form action="blockForm" method="POST">
+            <label for="block">Block</label>
+            <select name="block" id="block">
+              <option value="Hull">Hull</option>
+              <option value="Smart Hull">Smart Hull</option>
+              <!--options could be populated from blocklist-->
+            </select>
+          </form>
+        </li>
+        <li>
+          <!--Drop Down for stats-->
+          <form action="statForm" method="POST">
+            <label for="stat">Stats</label>
+            <select name="stat" id="stat">
+              <option value="cost$">Cost($)</option>
+              <option value="costM">Cost(M)</option>
+              <!--options could be populated from blocklist-->
+            </select>
+          </form>
+          <!--other stat should be renamed or hidden epending on block type-->
+          <p>(value of the stat)</p>
+        </li>
+        <li><p>x</p></li>
+        <li>
+          <!--Text box for numbers-->
+            <label for="quantityInput">Quantity:</label>
+            <input type="text" id="quantityInput" name="quantity">
+        </li>
+        <li><p>=</p></li>
+        <li>
+          <!--Text box for numbers-->
+          <label for="totalInput">Total:</label>
+          <input type="text" id="totalInput" name="total">
+        </li>
+      </ul>
+    </div>
     <h2>Building Knowledge</h2>
     <!-- drop down box with options like Iron, Titanium, Etc -->
     <h2>Processing Power Limit</h2>
     <!-- Auto fills to the Building Knowledge limit, manually editable if needed -->
   </main>
 
+  <script src="controller.js"></script>
   
 </body>
 </html>
