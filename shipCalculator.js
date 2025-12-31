@@ -17,6 +17,14 @@ class shipCalculator {
 
         //init default allocation varibles
         this.shieldPP = 0;
+        this.enginePP = 0;
+
+        //input variables
+        this.genTypeBool = this.palette.CheckPowerSource;
+        this.integrityFieldGeneratorCount = 0;
+        //engine calc
+        this.thrusterCount = 0;
+        this.armorBlocks = 0;
 
         //init calculator output variables
         //shield calc
@@ -25,6 +33,11 @@ class shipCalculator {
         this.shieldDurability = 0;
         this.sReqCrewEngineer = 0;
         this.sReqCrewmechanic = 0;
+
+        //engines
+        this.eGenCountEngines = 0;
+        this.eCount = 0;
+        this.cQCountEngines = 0;
     }
 
     changeBuildingKnowledge(newBK) {
@@ -89,51 +102,32 @@ class shipCalculator {
         //if shieldGenerator is unset or no power generators have been set
         if (this.palette.shieldGenerator == 'unset' || (this.palette.generator == 'unset' || this.palette.solarPanel == 'unset')) {console.log('shieldCalcHandler error: palette unset')}
         else {
+            let blockCountArray = 0
             //checks if shield generator is providing shield strength
-            if (this.palette.shieldGenerator.other > 0) {
+            if (this.palette.shieldGenerator.other == 0) {
+                // shields invalid set to zero
+                blockCountArray = [0,0]
+            }
+            else {
                 //shield generator as variable
                 let sGen = this.palette.shieldGenerator
                 let eGen;
 
-                //shield gen is valid checking power source
-                if (this.palette.generator.other > 0) {eGen = this.palette.generator /*set generator variable*/}
-                //generator failed attempting solarPanel as backup
-                else {
-                    console.log('Generator output <= 0')
-                    console.log('Switching to Solar Panels')
-                    if (this.palette.solarPanel.other > 0) {eGen = this.palette.solarPanel /*set generator variable*/}
-                    // no energy gen avaliable - 1st exit of function
-                    else {
-                        console.log('Solar Panel output <= 0');
-                        console.log('shieldCalcHandler: No available power generators');
-                        return false;
-                    }
-                }
+                if (this.genTypeBool) {eGen = this.palette.generator /*set generator variable*/}
+                else {eGen = this.palette.solarPanel /*set generator variable*/}
                 //shield generator and power sources are valid
-
+            
                 //logic
-                let blockCountArray = calcBlockCount(this.shieldPP, eGen, sGen)
-
-                //output
-                //block counts
-                this.eGenCountShields = blockCountArray[0];
-                this.sGenCount = blockCountArray[1];
-                
-                //crew requirements
-                this.sReqCrewEngineer = calcCrewNeeded(sGen, this.sGenCount, true)
-                this.sReqCrewmechanic = calcCrewNeeded(sGen, this.sGenCount)
-
-                //stats
-                this.shieldDurability = this.sGenCount * this.shieldDuribilityMult;
-
-                //successful exit
-                return true;
+                blockCountArray = calcBlockCount(this.shieldPP, eGen, sGen)
             }
-            //failed shield generator test - 2nd exit of function
-            else {
-                console.log('Shield Generator output <= 0');
-                return false;
-            }
+            //output
+            //block counts
+            this.eGenCountShields = blockCountArray[0];
+            this.sGenCount = blockCountArray[1];
+            
+
+            //stats
+            this.shieldDurability = this.sGenCount * this.shieldDuribilityMult;
         }
     }
 
@@ -158,6 +152,22 @@ class shipCalculator {
         if (engiBool) { crewType = 'reqCrewEngineer'; }
         return block[crewType] * blockCount;
     }
+
+    engineCalcHandler(){
+        //checking energy generator type
+        // generator
+        let eCalResults
+        if(this.genTypeBool) {
+            eCalResults = engineCalculator(this.enginePP, this.palette.engine, this.palette.generator, this.palette.crewQuarters, this.palette.shieldGenerator, this.sGenCount, this.palette.thruster, this.thrusterCount)
+        }
+        //solar panels
+        else {
+            eCalResults = engineCalculator();
+        }
+        this.eGenCountEngines = eCalResults[0];
+        this.eCount = eCalResults[1];
+        this.cQCountEngines = eCalResults[2];
+    };
 
     engineCalculator(ppLimit, engineBlock, energySource, crewQuartersBlock, shieldBlock, shieldCount, thrusterBlock, thrusterCount) {
     // engineer polution
@@ -329,5 +339,25 @@ class palette {
         setType('academy', material, BK, opti);
         setType('cloningPods', material, BK, opti);
         setType('solarPanel', material, BK, opti);
+    }
+
+    CheckPowerSource(){
+        //shield gen is valid checking power source
+        if (this.palette.generator.other > 0) {return true;}
+        //generator failed attempting solarPanel as backup
+        else {return false;}
+        //there should be no case when solar panels are invalid
+        //simplifying output of this function
+
+        //     console.log('Generator output <= 0')
+        //     console.log('Switching to Solar Panels')
+        //     if (this.palette.solarPanel.other > 0) {return false}
+        //     // no energy gen avaliable - 1st exit of function
+        //     else {
+        //         console.log('Solar Panel output <= 0');
+        //         console.log('shieldCalcHandler: No available power generators');
+        //         return 'error';
+        //     }
+        // }
     }
 }
