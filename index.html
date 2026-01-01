@@ -17,13 +17,13 @@
           <form action="materialForm" method="POST">
             <label for="material">Material</label>
             <select name="material" id="material">
-              <option value="Iron">Iron</option>
-              <option value="Titanium">Titanium</option>
-              <option value="Naonite">Naonite</option>
-              <option value="Trinium">Trinium</option>
-              <option value="Xanion">Xanion</option>
-              <option value="Ogonite">Ogonite</option>
-              <option value="Avorion">Avorion</option>
+              <option value="iron">Iron</option>
+              <option value="titanium">Titanium</option>
+              <option value="naonite">Naonite</option>
+              <option value="trinium">Trinium</option>
+              <option value="xanion">Xanion</option>
+              <option value="ogonite">Ogonite</option>
+              <option value="avorion">Avorion</option>
             </select>
           </form>
         </li>
@@ -32,9 +32,52 @@
           <form action="blockForm" method="POST">
             <label for="block">Block</label>
             <select name="block" id="block">
-              <option value="Hull">Hull</option>
-              <option value="Smart Hull">Smart Hull</option>
-              <!--options could be populated from blocklist-->
+
+              <!--prepopulate all options for browser to remember initial state on reload-->
+              <!--options will get cleared then repopulated from blocklist with js-->
+              <option value="blankHull">Blank Hull</option>
+              <option value="smartHull">Smart Hull</option>
+              <option value="armor">Armor</option>
+              <option value="engine">Engine</option>
+              <option value="cargoBay">Cargo Bay</option>
+              <option value="crewQuarters">Crew Quarters</option>
+              <option value="thruster">Thruster</option>
+              <option value="directionalThruster">Directional Thruster</option>
+              <option value="gyroArray">Gyro Array</option>
+              <option value="inertiaDampner">Inertia Dampner</option>
+              <option value="framework">Framework</option>
+              <option value="scaffold">Scaffold</option>
+              <option value="hangar">Hangar</option>
+              <option value="dock">Dock</option>
+              <option value="turretRotationLock">Turret Rotation Lock</option>
+              <option value="flightRecorder">Flight Recorder</option>
+              <option value="assembly">Assembly</option>
+              <option value="torpedoLauncher">Torpedo Launcher</option>
+              <option value="torpedoStorage">Torpedo Storage</option>
+              <option value="turretBase">Turret Base</option>
+              <option value="shieldGenerator">Shield Generator</option>
+              <option value="energyContainer">Energy Container</option>
+              <option value="generator">Generator</option>
+              <option value="integrityFieldGenerator">Integrity Field Generator</option>
+              <option value="computerCore">Computer Core</option>
+              <option value="hyperspaceCore">Hyperspace Core</option>
+              <option value="transporter">Transporter</option>
+              <option value="academy">Academy</option>
+              <option value="cloningPods">Cloning Pods</option>
+              <option value="solarPanel">Solar Panel</option>
+              <option value="light">Light</option>
+              <option value="glow">Glow</option>
+              <option value="glass">Glass</option>
+              <option value="reflector">Reflector</option>
+              <option value="stone">Stone</option>
+              <option value="hologram">Hologram</option>
+              <option value="richStone">Rich Stone</option>
+              <option value="superRichStone">Super Rich Stone</option>
+              <option value="shipName">Ship Name</option>
+              <option value="shipEmblem">Ship Emblem</option>
+              <option value="hullAlternatePatternA">Hull (Alternate Pattern A)</option>
+              <option value="hullVividColors">Hull (Vivid Colors)</option>
+              <option value="hullWhiteStripesA">Hull (White Stripes A)</option>
             </select>
           </form>
         </li>
@@ -45,6 +88,11 @@
             <select name="stat" id="stat">
               <option value="cost$">Cost($)</option>
               <option value="costM">Cost(M)</option>
+              <option value="health">Health</option>
+              <option value="weight">Weight</option>
+              <option value="procPower">Processing Power</option>
+              <option value="reqEnergy">Required Energy</option>
+              <option value="other">Other</option>
               <!--options could be populated from blocklist-->
             </select>
           </form>
@@ -54,14 +102,14 @@
         <li><p>x</p></li>
         <li>
           <!--Text box for numbers-->
-            <label for="quantityInput">Quantity:</label>
-            <input type="text" id="quantityInput" name="quantity">
+            <label for="quantityTextBox">Quantity:</label>
+            <input type="text" id="quantityTextBox" name="quantity">
         </li>
         <li><p>=</p></li>
         <li>
           <!--Text box for numbers-->
-          <label for="totalInput">Total:</label>
-          <input type="text" id="totalInput" name="total">
+          <label for="totalTextBox">Total:</label>
+          <input type="text" id="totalTextBox" name="total">
         </li>
       </ul>
     </div>
@@ -71,7 +119,7 @@
     <!-- Auto fills to the Building Knowledge limit, manually editable if needed -->
   </main>
 
-  <script src="controller.js"></script>
+  <script type="module" src="controller.js"></script>
   
 </body>
 </html>

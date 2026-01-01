@@ -1,5 +1,5 @@
 //handles the calculation for ship stats
-class shipCalculator {
+export default class shipCalculator {
     constructor (buildingKnowledge, palette) {
         this.buildingKnowledge = buildingKnowledge;
 
