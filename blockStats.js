@@ -132,6 +132,14 @@ class allBlocks {
         //avorion
         this.avorion = new material(...allBlocks.slice(258,301));
     }
+
+    statCalc(material, block, stat, quantity, bool=false) {
+        //calculates total stat of given block
+        //bool lets you reverse calculate quantity from total
+        //insert total instead of quantity
+        if (bool) { console.log('tot'); return quantity / this[material][block][stat];}
+        else {return this[material][block][stat] * quantity;}
+    }
 }
 
 
