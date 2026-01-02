@@ -97,19 +97,19 @@
             </select>
           </form>
           <!--other stat should be renamed or hidden epending on block type-->
-          <p>(value of the stat)</p>
+          <p id="statPreview">(value of the stat)</p>
         </li>
         <li><p>x</p></li>
         <li>
           <!--Text box for numbers-->
             <label for="quantityTextBox">Quantity:</label>
-            <input type="text" id="quantityTextBox" name="quantity">
+            <input type="number" min="0" id="quantityTextBox" name="quantity">
         </li>
         <li><p>=</p></li>
         <li>
           <!--Text box for numbers-->
           <label for="totalTextBox">Total:</label>
-          <input type="text" id="totalTextBox" name="total">
+          <input type="number" min="0" id="totalTextBox" name="total">
         </li>
       </ul>
     </div>
