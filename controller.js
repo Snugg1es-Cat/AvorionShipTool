@@ -14,21 +14,42 @@ blockList.convertCSVIntoData("Blank Hull,12,5,4,51,0,0,,\nSmart Hull,12,5,4,51,1
 const materialDropBox = document.getElementById('material')
 const blockDropBox = document.getElementById('block')
 const statDropBox = document.getElementById('stat')
+//stat preview
+const statPreview = document.getElementById('statPreview')
 
 //text box
 const quantityTextBox = document.getElementById('quantityTextBox')
 const totalTextBox = document.getElementById('totalTextBox')
 
-//event handlers
+//event listeners
 //drop down boxes
-materialDropBox.addEventListener("input", () => {
+
+//Cascade when any of they're called material -> block -> stat
+//passes runCalc a boolean which triggers the Stat Calculator (statCalc)
+//runCalc checks if the block and stat are valid
+materialDropBox.addEventListener("input", () => {materialDropEvent();});
+function materialDropEvent() {
     //handles block list update
-    updateBlockOptions(blockList, materialDropBox.value, blockDropBox);
-    //aswell as triggering the text box update (without delay)
-    totalTextBox.value = blockList.statCalc([materialDropBox.value], [blockDropBox.value], [statDropBox.value], quantityTextBox.value);
-})
-blockDropBox.addEventListener("input", () => {totalTextBox.value = blockList.statCalc([materialDropBox.value], [blockDropBox.value], [statDropBox.value], quantityTextBox.value);});
-statDropBox.addEventListener("input", () => {totalTextBox.value = blockList.statCalc([materialDropBox.value], [blockDropBox.value], [statDropBox.value], quantityTextBox.value);});  
+    let runCalc = updateBlockOptions(blockList, materialDropBox.value, blockDropBox);
+    //aswell as triggering the block drop down event
+    blockDropEvent(runCalc);
+}
+//called code moved to function so other listeners can call them aswell
+blockDropBox.addEventListener("input", () => {blockDropEvent();});
+function blockDropEvent(runCalc=true) {
+    //updates unique label for the other variable
+    runCalc = runCalc && updateStatOtherLabel(blockList,materialDropBox.value, blockDropBox.value,statDropBox);
+    statDropEvent(runCalc);
+}
+
+//statDropBox.addEventListener("input", () => {statDropEvent();});
+statDropBox.addEventListener("input", () => {statDropEvent();})
+function statDropEvent(runCalc=true) {
+    //update stat preview value
+    statPreview.innerHTML = blockList[materialDropBox.value][blockDropBox.value][statDropBox.value];
+    //triggers text box update without delay
+    if (runCalc) {textBoxSubmit(quantityTextBox, totalTextBox);}
+}
 
 //auto submit text box events
 quantityTextBox.addEventListener("input", () => {autoSubmit(quantityTextBox, totalTextBox);});
@@ -37,7 +58,8 @@ totalTextBox.addEventListener("input", () => {autoSubmit(totalTextBox, quantityT
 //which contains a function (generic for handling any auto submit textbox)
 
 //init code
-updateBlockOptions(blockList, materialDropBox.value, blockDropBox);
+materialDropEvent();
+statPreview.innerHTML = blockList[materialDropBox.value][blockDropBox.value][statDropBox.value];
 
 
 //functions
@@ -50,23 +72,67 @@ function autoSubmit(input, output, bool=false) {
     clearTimeout(autoSubmitDelay)
     autoSubmitDelay = setTimeout(() => {
         
-        //output.value = input.value *2;
-        output.value = blockList.statCalc([materialDropBox.value], [blockDropBox.value], [statDropBox.value], input.value, bool);
-        
+        textBoxSubmit(input, output, bool)
+
     }, 500); // waits 500ms after last keystroke)
+}
+//runs data from input through statCalc then submits to output
+function textBoxSubmit(input, output, bool=false) {
+    let newValue = blockList.statCalc([materialDropBox.value], [blockDropBox.value], [statDropBox.value], input.value, bool);
+    //if value is greater than 0 set as value if not clear and set as place holder
+    handlePlaceHolderNumeric(output, newValue);
+
+    //check if input needs to be place holdered
+    if (input.value == '') {input.value = 0};
+    handlePlaceHolderNumeric(input, input.value);
+}
+
+function handlePlaceHolderNumeric(output, newValue){
+    //checks for valid output otherwise submits 0 as a
+    if (newValue > 0) {output.value = newValue;}
+    else {
+        output.value = '';
+        output.placeholder = 0;
+    }
 }
 
 function updateBlockOptions(blockList, material, blockElement) {
+    //return boolean true if current selected block is invalid
     let blockSelected = blockElement.value;
+    let boolCurrentBlockSpotted = false;
     blockElement.length = 0;
     Object.values(blockList[material]).forEach(block => {
-        if (!isNaN(block.cost$)) {blockElement.add(new Option(block.name, camelCase(block.name)));}
+        if (!isNaN(block.cost$)) {
+            let value = camelCase(block.name)
+            blockElement.add(new Option(block.name, value));
+            //spots block
+            if (value == blockSelected) {boolCurrentBlockSpotted = true;}
+        }
     });
+    //if block not spotted in list output message
+    if (!boolCurrentBlockSpotted) {
+        blockElement.add(new Option(blockList[material][blockSelected].name + ' Block N/A', blockSelected));
+        blockElement.options[blockElement.length - 1].hidden = true;
+    }
     blockElement.value = blockSelected;
+    return boolCurrentBlockSpotted;
 }
 
-function updateStatOther() {
+function updateStatOtherLabel(blockList, material, block, statElement) {
+    //returns boolean true if current selected stat is invalid
     //changes the other stats displayed message
+    let newText = blockList[material][block].otherType
+    let boolCurrentStatValid = true;
+    if (newText == '') {
+        statElement.options[6].text = 'Unique Stat N/A'
+        statElement.options[6].hidden = true
+
+        //checking if other is selected when it shouldnt exist
+        if (statElement.value == "other") {boolCurrentStatValid = false;}
+    }
+    else {statElement.options[6].hidden = false;}
+    statElement.options[6].text = newText
+    return boolCurrentStatValid;
 }
 
 function camelCase(string) {
