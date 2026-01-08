@@ -48,12 +48,12 @@ function statDropEvent(runCalc=true) {
     //update stat preview value
     statPreview.innerHTML = blockList[materialDropBox.value][blockDropBox.value][statDropBox.value];
     //triggers text box update without delay
-    if (runCalc) {textBoxSubmit(quantityTextBox, totalTextBox);}
+    if (runCalc) {runBlockCalc(quantityTextBox, totalTextBox);}
 }
 
 //auto submit text box events
-quantityTextBox.addEventListener("input", () => {autoSubmit(quantityTextBox, totalTextBox);});
-totalTextBox.addEventListener("input", () => {autoSubmit(totalTextBox, quantityTextBox, true);});
+quantityTextBox.addEventListener("input", () => {autoSubmit(runBlockCalc, [quantityTextBox, totalTextBox]);});
+totalTextBox.addEventListener("input", () => {autoSubmit(runBlockCalc, [totalTextBox, quantityTextBox, true]);});
 //event listener stores an unnamed function '() => {}' specific to that event
 //which contains a function (generic for handling any auto submit textbox)
 
@@ -62,33 +62,26 @@ materialDropEvent();
 statPreview.innerHTML = blockList[materialDropBox.value][blockDropBox.value][statDropBox.value];
 
 
-//functions
+
+//utility functions
+
+//text box auto submit 
 let autoSubmitDelay
-function autoSubmit(input, output, bool=false) {
-    //submits the input textbox automatically after typing after a small delay
-    //delay reduces load of server machine
+function autoSubmit(Func, paramArray) {
+    //triggers fed function feeding it a array as parameters after a delay reduces load of server machine
 
     //Timeout is a set of built in JS functions
     clearTimeout(autoSubmitDelay)
     autoSubmitDelay = setTimeout(() => {
         
-        textBoxSubmit(input, output, bool)
+        Func(...paramArray)
 
     }, 500); // waits 500ms after last keystroke)
 }
-//runs data from input through statCalc then submits to output
-function textBoxSubmit(input, output, bool=false) {
-    let newValue = blockList.statCalc([materialDropBox.value], [blockDropBox.value], [statDropBox.value], input.value, bool);
-    //if value is greater than 0 set as value if not clear and set as place holder
-    handlePlaceHolderNumeric(output, newValue);
 
-    //check if input needs to be place holdered
-    if (input.value == '') {input.value = 0};
-    handlePlaceHolderNumeric(input, input.value);
-}
-
-function handlePlaceHolderNumeric(output, newValue){
-    //checks for valid output otherwise submits 0 as a
+//display output
+function setOutputAsRegOrPH(output, newValue) {
+    //checks newValue validity to output value otherwise sets 0 as a placeholder ghost
     if (newValue > 0) {output.value = newValue;}
     else {
         output.value = '';
@@ -96,6 +89,43 @@ function handlePlaceHolderNumeric(output, newValue){
     }
 }
 
+function camelCase(string) {
+    //turns a string into camel case string eg. 'camelCaseString'
+
+    //sorts into an array of words removing all spaces
+    let wordArray = string.toLowerCase().split(' ').filter(word => word != '')
+    
+    //capitalizes the first letter of each word
+    let newString = ''
+    wordArray.forEach(element => {
+        newString += element.charAt(0).toUpperCase() + element.slice(1);
+    });
+    //lowers the first letter
+    return newString.charAt(0).toLowerCase() + newString.slice(1)
+}
+
+
+
+
+//functions for block calculator
+
+//main block calculator operations
+function runBlockCalc(input, output, bool=false) {
+    //runs data from input element through statCalc (from blockStats) then submits to output element
+    //bool inverts the calculation to find count instead of total
+    let newValue = blockList.statCalc([materialDropBox.value], [blockDropBox.value], [statDropBox.value], input.value, bool);
+
+    //update output
+    //if value is greater than 0 update value if not clear and set to placeholder
+    setOutputAsRegOrPH(output, newValue);
+
+    //checks if input needs to be a placeholder
+    if (input.value == '') {input.value = 0};
+    setOutputAsRegOrPH(input, input.value);
+}
+
+//drop down boxes
+//update block type based on material selected
 function updateBlockOptions(blockList, material, blockElement) {
     //return boolean true if current selected block is invalid
     let blockSelected = blockElement.value;
@@ -103,6 +133,7 @@ function updateBlockOptions(blockList, material, blockElement) {
     blockElement.length = 0;
     Object.values(blockList[material]).forEach(block => {
         if (!isNaN(block.cost$)) {
+            //camel cases block name to be used as a value
             let value = camelCase(block.name)
             blockElement.add(new Option(block.name, value));
             //spots block
@@ -118,6 +149,7 @@ function updateBlockOptions(blockList, material, blockElement) {
     return boolCurrentBlockSpotted;
 }
 
+//update stats available based on block selected
 function updateStatOtherLabel(blockList, material, block, statElement) {
     //returns boolean true if current selected stat is invalid
     //changes the other stats displayed message
@@ -134,18 +166,3 @@ function updateStatOtherLabel(blockList, material, block, statElement) {
     statElement.options[6].text = newText
     return boolCurrentStatValid;
 }
-
-function camelCase(string) {
-    //turns a string into camel case string eg. 'camelCaseString'
-
-    //sorts into an array of words removing all spaces
-    let wordArray = string.toLowerCase().split(' ').filter(word => word != '')
-    
-    //capitalizes the first letter of each word
-    let newString = ''
-    wordArray.forEach(element => {
-        newString += element.charAt(0).toUpperCase() + element.slice(1);
-    });
-    //lowers the first letter
-    return newString.charAt(0).toLowerCase() + newString.slice(1)
-};
