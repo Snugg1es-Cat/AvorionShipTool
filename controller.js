@@ -10,52 +10,83 @@ blockList.convertCSVIntoData("Blank Hull,12,5,4,51,0,0,,\nSmart Hull,12,5,4,51,1
 //example pull data
 //console.log(blockList.iron.blankHull.cost$)
 
-//drop down boxes
-const materialDropBox = document.getElementById('material')
-const blockDropBox = document.getElementById('block')
-const statDropBox = document.getElementById('stat')
-//stat preview
-const statPreview = document.getElementById('statPreview')
+//DOM elements
+    //Block Calculator
+        //Drop Down Boxes
+        const materialDropBox = document.getElementById('material');
+        const blockDropBox = document.getElementById('block');
+        const statDropBox = document.getElementById('stat');
+        //Stat Preview
+        const statPreview = document.getElementById('statPreview');
 
-//text box
-const quantityTextBox = document.getElementById('quantityTextBox')
-const totalTextBox = document.getElementById('totalTextBox')
+        //Text Boxes
+        const quantityTextBox = document.getElementById('quantityTextBox');
+        const totalTextBox = document.getElementById('totalTextBox');
+
+    //Main Ship Calculator
+        //Drop DOwn Boxes
+        const buildingKnowledgeDropBox = document.getElementById('buildingKnowledgeDropBox');
+        const blockPaletteDropBox = document.getElementById('blockPaletteDropBox');
+
+        //Input Allocation Text Boxes
+        const shieldAllocationTextBox = document.getElementById('shieldAllocationTextBox');
+        const engineAllocationTextBox = document.getElementById('engineAllocationTextBox');
+        //Other Inputs
+        const armorTotalTextBox = document.getElementById('armorTotalTextBox');
+        const thrusterTotalTextBox = document.getElementById('thrusterTotaltextBox');
 
 //event listeners
-//drop down boxes
+    //Block Calculator
+        //drop down boxes
 
-//Cascade when any of they're called material -> block -> stat
-//passes runCalc a boolean which triggers the Stat Calculator (statCalc)
-//runCalc checks if the block and stat are valid
-materialDropBox.addEventListener("input", () => {materialDropEvent();});
-function materialDropEvent() {
-    //handles block list update
-    let runCalc = updateBlockOptions(blockList, materialDropBox.value, blockDropBox);
-    //aswell as triggering the block drop down event
-    blockDropEvent(runCalc);
-}
-//called code moved to function so other listeners can call them aswell
-blockDropBox.addEventListener("input", () => {blockDropEvent();});
-function blockDropEvent(runCalc=true) {
-    //updates unique label for the other variable
-    runCalc = runCalc && updateStatOtherLabel(blockList,materialDropBox.value, blockDropBox.value,statDropBox);
-    statDropEvent(runCalc);
-}
+        //Cascade when any of they're called material -> block -> stat
+        //passes runCalc a boolean which triggers the Stat Calculator (statCalc)
+        //runCalc checks if the block and stat are valid
+        materialDropBox.addEventListener("input", () => {materialDropEvent();});
+        function materialDropEvent() {
+            //handles block list update
+            let runCalc = updateBlockOptions(blockList, materialDropBox.value, blockDropBox);
+            //aswell as triggering the block drop down event
+            blockDropEvent(runCalc);
+        }
+        //called code moved to function so other listeners can call them aswell
+        blockDropBox.addEventListener("input", () => {blockDropEvent();});
+        function blockDropEvent(runCalc=true) {
+            //updates unique label for the other variable
+            runCalc = runCalc && updateStatOtherLabel(blockList,materialDropBox.value, blockDropBox.value,statDropBox);
+            statDropEvent(runCalc);
+        }
 
-//statDropBox.addEventListener("input", () => {statDropEvent();});
-statDropBox.addEventListener("input", () => {statDropEvent();})
-function statDropEvent(runCalc=true) {
-    //update stat preview value
-    statPreview.innerHTML = blockList[materialDropBox.value][blockDropBox.value][statDropBox.value];
-    //triggers text box update without delay
-    if (runCalc) {runBlockCalc(quantityTextBox, totalTextBox);}
-}
+        //statDropBox.addEventListener("input", () => {statDropEvent();});
+        statDropBox.addEventListener("input", () => {statDropEvent();})
+        function statDropEvent(runCalc=true) {
+            //update stat preview value
+            statPreview.innerHTML = blockList[materialDropBox.value][blockDropBox.value][statDropBox.value];
+            //triggers text box update without delay
+            if (runCalc) {runBlockCalc(quantityTextBox, totalTextBox);}
+        }
+        
+        //auto submit text box events
+        quantityTextBox.addEventListener("input", () => {autoSubmit(runBlockCalc, [quantityTextBox, totalTextBox]);});
+        totalTextBox.addEventListener("input", () => {autoSubmit(runBlockCalc, [totalTextBox, quantityTextBox, true]);});
+        //event listener stores an unnamed function '() => {}' specific to that event
+        //which contains a function (generic for handling any auto submit textbox)
+    
 
-//auto submit text box events
-quantityTextBox.addEventListener("input", () => {autoSubmit(runBlockCalc, [quantityTextBox, totalTextBox]);});
-totalTextBox.addEventListener("input", () => {autoSubmit(runBlockCalc, [totalTextBox, quantityTextBox, true]);});
-//event listener stores an unnamed function '() => {}' specific to that event
-//which contains a function (generic for handling any auto submit textbox)
+    //Main Ship Calculator
+        //Building Knowledge
+        buildingKnowledgeDropBox.addEventListener("input", () => {})
+        //Palette Optimization
+        blockPaletteDropBox.addEventListener("input", () => {})
+
+        //Input Allocation Variables
+        shieldAllocationTextBox.addEventListener("input", () => {})
+        engineAllocationTextBox.addEventListener("input", () => {})
+        //Other
+        armorTotalTextBox.addEventListener("input", () => {})
+        thrusterTotalTextBox.addEventListener("input", () => {})
+
+
 
 //init code
 materialDropEvent();
@@ -65,104 +96,105 @@ statPreview.innerHTML = blockList[materialDropBox.value][blockDropBox.value][sta
 
 //utility functions
 
-//text box auto submit 
-let autoSubmitDelay
-function autoSubmit(Func, paramArray) {
-    //triggers fed function feeding it a array as parameters after a delay reduces load of server machine
+    //Text Box Auto Submit 
+    let autoSubmitDelay
+    function autoSubmit(Func, paramArray) {
+        //triggers fed function feeding it a array as parameters after a delay reduces load of server machine
 
-    //Timeout is a set of built in JS functions
-    clearTimeout(autoSubmitDelay)
-    autoSubmitDelay = setTimeout(() => {
-        
-        Func(...paramArray)
+        //Timeout is a set of built in JS functions
+        clearTimeout(autoSubmitDelay)
+        autoSubmitDelay = setTimeout(() => {
+            
+            Func(...paramArray)
 
-    }, 500); // waits 500ms after last keystroke)
-}
-
-//display output
-function setOutputAsRegOrPH(output, newValue) {
-    //checks newValue validity to output value otherwise sets 0 as a placeholder ghost
-    if (newValue > 0) {output.value = newValue;}
-    else {
-        output.value = '';
-        output.placeholder = 0;
+        }, 500); // waits 500ms after last keystroke)
     }
-}
 
-function camelCase(string) {
-    //turns a string into camel case string eg. 'camelCaseString'
+    //Display Output
+    function setOutputAsRegOrPH(output, newValue) {
+        //checks newValue validity to output value otherwise sets 0 as a placeholder ghost
+        if (newValue > 0) {output.value = newValue;}
+        else {
+            output.value = '';
+            output.placeholder = 0;
+        }
+    }
 
-    //sorts into an array of words removing all spaces
-    let wordArray = string.toLowerCase().split(' ').filter(word => word != '')
-    
-    //capitalizes the first letter of each word
-    let newString = ''
-    wordArray.forEach(element => {
-        newString += element.charAt(0).toUpperCase() + element.slice(1);
-    });
-    //lowers the first letter
-    return newString.charAt(0).toLowerCase() + newString.slice(1)
-}
+    //Convert String to Camel Case   
+    function camelCase(string) {
+        //turns a string into camel case string eg. 'camelCaseString'
+
+        //sorts into an array of words removing all spaces
+        let wordArray = string.toLowerCase().split(' ').filter(word => word != '')
+        
+        //capitalizes the first letter of each word
+        let newString = ''
+        wordArray.forEach(element => {
+            newString += element.charAt(0).toUpperCase() + element.slice(1);
+        });
+        //lowers the first letter
+        return newString.charAt(0).toLowerCase() + newString.slice(1)
+    }
 
 
 
 
 //functions for block calculator
 
-//main block calculator operations
-function runBlockCalc(input, output, bool=false) {
-    //runs data from input element through statCalc (from blockStats) then submits to output element
-    //bool inverts the calculation to find count instead of total
-    let newValue = blockList.statCalc([materialDropBox.value], [blockDropBox.value], [statDropBox.value], input.value, bool);
+    //Main Operations Block Calculator
+    function runBlockCalc(input, output, bool=false) {
+        //runs data from input element through statCalc (from blockStats) then submits to output element
+        //bool inverts the calculation to find count instead of total
+        let newValue = blockList.statCalc([materialDropBox.value], [blockDropBox.value], [statDropBox.value], input.value, bool);
 
-    //update output
-    //if value is greater than 0 update value if not clear and set to placeholder
-    setOutputAsRegOrPH(output, newValue);
+        //update output
+        //if value is greater than 0 update value if not clear and set to placeholder
+        setOutputAsRegOrPH(output, newValue);
 
-    //checks if input needs to be a placeholder
-    if (input.value == '') {input.value = 0};
-    setOutputAsRegOrPH(input, input.value);
-}
+        //checks if input needs to be a placeholder
+        if (input.value == '') {input.value = 0};
+        setOutputAsRegOrPH(input, input.value);
+    }
 
-//drop down boxes
-//update block type based on material selected
-function updateBlockOptions(blockList, material, blockElement) {
-    //return boolean true if current selected block is invalid
-    let blockSelected = blockElement.value;
-    let boolCurrentBlockSpotted = false;
-    blockElement.length = 0;
-    Object.values(blockList[material]).forEach(block => {
-        if (!isNaN(block.cost$)) {
-            //camel cases block name to be used as a value
-            let value = camelCase(block.name)
-            blockElement.add(new Option(block.name, value));
-            //spots block
-            if (value == blockSelected) {boolCurrentBlockSpotted = true;}
+    //drop down boxes
+        //update block type based on material selected
+        function updateBlockOptions(blockList, material, blockElement) {
+            //return boolean true if current selected block is invalid
+            let blockSelected = blockElement.value;
+            let boolCurrentBlockSpotted = false;
+            blockElement.length = 0;
+            Object.values(blockList[material]).forEach(block => {
+                if (!isNaN(block.cost$)) {
+                    //camel cases block name to be used as a value
+                    let value = camelCase(block.name)
+                    blockElement.add(new Option(block.name, value));
+                    //spots block
+                    if (value == blockSelected) {boolCurrentBlockSpotted = true;}
+                }
+            });
+            //if block not spotted in list output message
+            if (!boolCurrentBlockSpotted) {
+                blockElement.add(new Option(blockList[material][blockSelected].name + ' Block N/A', blockSelected));
+                blockElement.options[blockElement.length - 1].hidden = true;
+            }
+            blockElement.value = blockSelected;
+            return boolCurrentBlockSpotted;
         }
-    });
-    //if block not spotted in list output message
-    if (!boolCurrentBlockSpotted) {
-        blockElement.add(new Option(blockList[material][blockSelected].name + ' Block N/A', blockSelected));
-        blockElement.options[blockElement.length - 1].hidden = true;
-    }
-    blockElement.value = blockSelected;
-    return boolCurrentBlockSpotted;
-}
 
-//update stats available based on block selected
-function updateStatOtherLabel(blockList, material, block, statElement) {
-    //returns boolean true if current selected stat is invalid
-    //changes the other stats displayed message
-    let newText = blockList[material][block].otherType
-    let boolCurrentStatValid = true;
-    if (newText == '') {
-        statElement.options[6].text = 'Unique Stat N/A'
-        statElement.options[6].hidden = true
+        //update stats available based on block selected
+        function updateStatOtherLabel(blockList, material, block, statElement) {
+            //returns boolean true if current selected stat is invalid
+            //changes the other stats displayed message
+            let newText = blockList[material][block].otherType
+            let boolCurrentStatValid = true;
+            if (newText == '') {
+                statElement.options[6].text = 'Unique Stat N/A'
+                statElement.options[6].hidden = true
 
-        //checking if other is selected when it shouldnt exist
-        if (statElement.value == "other") {boolCurrentStatValid = false;}
-    }
-    else {statElement.options[6].hidden = false;}
-    statElement.options[6].text = newText
-    return boolCurrentStatValid;
-}
+                //checking if other is selected when it shouldnt exist
+                if (statElement.value == "other") {boolCurrentStatValid = false;}
+            }
+            else {statElement.options[6].hidden = false;}
+            statElement.options[6].text = newText
+            return boolCurrentStatValid;
+        }
