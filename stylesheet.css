@@ -1,0 +1,13 @@
+/*Block Calculator*/
+#blockCalc {
+    background-color: rgb(200, 255, 255);
+    border: dashed;
+    margin: 1rem;
+}
+
+/*ship 1*/
+#ship1 {
+    background-color: rgb(255, 218, 254);
+    border: dashed;
+    margin: 1rem;
+}

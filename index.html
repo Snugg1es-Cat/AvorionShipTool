@@ -102,8 +102,8 @@
         <li><p>x</p></li>
         <li>
           <!--Text box for numbers-->
-            <label for="quantityTextBox">Quantity:</label>
-            <input type="number" min="0" id="quantityTextBox" name="quantity">
+          <label for="quantityTextBox">Quantity:</label>
+          <input type="number" min="0" id="quantityTextBox" name="quantity">
         </li>
         <li><p>=</p></li>
         <li>
@@ -114,14 +114,51 @@
       </ul>
     </div>
     <div id="ship1">
-      <h2>Ship 1</h2>
-      <!-- drop down box with options like Iron, Titanium, Etc -->
-      <h2>Processing Power Limit</h2>
-      <!-- Auto fills to the Building Knowledge limit, manually editable if needed -->
+      <!--Ship Name-->
+      <input placeholder="Ship Name"></input>
+
+      <!--Building Knowledge Drop Down-->
+      <label for="buildingKnowledge">Building Knowledge</label>
+      <select id="buildingKnowledge">
+        <option value="iron">Iron</option>
+        <option value="titanium">Titanium</option>
+        <option value="naonite">Naonite</option>
+        <option value="trinium">Trinium</option>
+        <option value="xanion">Xanion</option>
+        <option value="ogonite">Ogonite</option>
+        <option value="avorion">Avorion</option>
+      </select>
+
+      <!--Block Palette-->
+      <label for="blockPalette">Block Palette</label>
+      <select id="blockPalette">
+        <option value="processingPower">Processing Power</option>
+        <option value="weight">Weight</option>
+
+        <!--Custom could open a larger detailed selection menu-->
+        <option value="custom">Custom</option>
+      </select>
+
+      <!--Input Allocation Boxes-->
+      <li>
+        <ul>
+          <label for="shieldAllocationTextBox">Shields:</label>
+          <input type="number" min="0" id="shieldsAllocationTextBox" name="shield">
+        </ul>
+        <ul>
+          <label for="engineAllocationTextBox">Engines:</label>
+          <input type="number" min="0" id="engineAllocationTextBox" name="engine">
+        </ul>
+      </li>
+
+      <!--output stats-->
+      <li>
+        <ul></ul>
+      </li>
     </div>
   </main>
 
-  <script type="module" src="controller.js"></script>
+  
   
 </body>
 </html>
