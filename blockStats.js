@@ -1,3 +1,5 @@
+import * as fs from 'fs';
+
 // universal block type to hold stats
 class block {
     constructor(name, cost$, costM, health, weight, procPower, reqEnergy, other, otherType, reqMechanic, reqEngineer) {
@@ -74,14 +76,14 @@ class material {
 
 // class containing array of all material types
 class allBlocks {
-    constructor(filePath) {
-       // this.loadFromCSV(filePath);
+    constructor(filePath='') {
+        if (Boolean(filePath)) {this.loadFromCSV(filePath);}
     }
 
-    //loadFromCSV(filePath) {
-        //todo
-        
-    //}
+    loadFromCSV(filePath) {
+        let csvString = fs.readFileSync(filePath, 'utf-8');
+        this.convertCSVIntoData(csvString);
+    }
 
     //takes csv data turning it into useable data
     convertCSVIntoData(csvDataString) {

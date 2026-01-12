@@ -103,19 +103,26 @@
         <li>
           <!--Text box for numbers-->
           <label for="quantityTextBox">Quantity:</label>
-          <input type="number" min="0" id="quantityTextBox" name="quantity">
+          <input type="text" inputmode="numeric" id="quantityTextBox" name="quantity">
+            <!-- Note:
+              using type="text" boxes instead of type="number" with min="0" 
+              because it has build in validation which submits an empty string if invalid.
+              Relying on serverside validation (which is needed anyway)
+              lets the text box attempt to correct mistakes instead of clearing everything.
+              This sacrifices the Spinner Buttons and being able to handle scientific notation (not needed)
+            -->
         </li>
         <li><p>=</p></li>
         <li>
           <!--Text box for numbers-->
           <label for="totalTextBox">Total:</label>
-          <input type="number" min="0" id="totalTextBox" name="total">
+          <input type="text" inputmode="numeric" id="totalTextBox" name="total">
         </li>
       </ul>
     </div>
-    <div id="ship1">
+    <div id="ship">
       <!--Ship Name-->
-      <input placeholder="Ship Name"></input>
+      <input id="shipName" placeholder="Ship Name"></input>
 
       <!--Building Knowledge Drop Down-->
       <label for="buildingKnowledgeDropBox">Building Knowledge</label>
@@ -140,23 +147,25 @@
       </select>
 
       <!--Input Allocation Boxes-->
+      <label for="PPLimitTextBox">PP Limit:</label>
+      <input type="text" inputmode="numeric" step="1" id="PPLimitTextBox" value="128"></input>
       <li>
         <ul>
           <label for="shieldAllocationTextBox">Shields:</label>
-          <input type="number" min="0" id="shieldsAllocationTextBox" name="shield">
+          <input type="text" inputmode="numeric" id="shieldAllocationTextBox" name="shield">
         </ul>
         <ul>
           <label for="engineAllocationTextBox">Engines:</label>
-          <input type="number" min="0" id="engineAllocationTextBox" name="engine">
+          <input type="text" inputmode="numeric" id="engineAllocationTextBox" name="engine">
         </ul>
         <!--Other-->
         <ul>
           <label for="armorTotalTextBox">Armor:</label>
-          <input type="number" min="0" id="armorTotalTextBox" name="armor">
+          <input type="text" inputmode="numeric" id="armorTotalTextBox" name="armor">
         </ul>
-        <ul>
-          <label for="thrusterTotaltextBox">Armor:</label>
-          <input type="number" min="0" id="thrusterTotaltextBox" name="thruster">
+        <ul>  
+          <label for="thrusterTotaltextBox">Thruster:</label>
+          <input type="text" inputmode="numeric" id="thrusterTotaltextBox" name="thruster">
         </ul>
       </li>
       
