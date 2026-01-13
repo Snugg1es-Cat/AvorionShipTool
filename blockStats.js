@@ -1,4 +1,4 @@
-import * as fs from 'fs';
+//import * as fs from 'fs';
 
 // universal block type to hold stats
 class block {
@@ -24,7 +24,7 @@ class block {
 
 // universal material type to hold an array of blocks
 class material {
-    constructor(blankHull, smartHull, armor, engine, cargoBay, crewQuarters, thruster, directionalThruster, gyroArray, inertialDampner, framework, scaffold, hangar, dock, turretRotationLock, flightRecorder, assembly, torpedoLauncher, torpedoStorage, turretBase, shieldGenerator, energyContainer, generator, integrityFieldGenerator, computerCore, hyperspaceCore, transporter, academy, cloningPods, solarPanel, light, glow, glass, reflector, stone, hologram, richStone, superRichStone, shipName, shipEmblem, hullAPA, hullVC, hullWSA) {
+    constructor(blankHull, smartHull, armor, engine, cargoBay, crewQuarters, thruster, directionalThruster, gyroArray, inertialDampener, framework, scaffold, hangar, dock, turretRotationLock, flightRecorder, assembly, torpedoLauncher, torpedoStorage, turretBase, shieldGenerator, energyContainer, generator, integrityFieldGenerator, computerCore, hyperspaceCore, transporter, academy, cloningPods, solarPanel, light, glow, glass, reflector, stone, hologram, richStone, superRichStone, shipName, shipEmblem, hullAPA, hullVC, hullWSA) {
         this.blankHull = blankHull;
         this.smartHull = smartHull;
         this.armor = armor;
@@ -34,7 +34,7 @@ class material {
         this.thruster = thruster; 
         this.directionalThruster = directionalThruster; 
         this.gyroArray = gyroArray; 
-        this.inertialDampner = inertialDampner; 
+        this.inertialDampener = inertialDampener; 
         this.framework = framework; 
         this.scaffold = scaffold; 
         this.hangar = hangar; 
