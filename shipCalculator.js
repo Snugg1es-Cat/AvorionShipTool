@@ -1,15 +1,12 @@
 //handles the calculation for ship stats
 export default class shipCalculator {
-    constructor (buildingKnowledge, palette) {
-        this.buildingKnowledge = buildingKnowledge;
-
-        this.palette = palette
+    constructor (allBlocks, optimization, buildingKnowledge) {
+        //palette
+        this.palette = new palette(allBlocks);
+        this.optimization = optimization;
 
         // set default PPLimit
-        this.setPPLimitToBK();
-
-        //selects block palette 
-        this.selectBlockPalette(false);
+        this.PPLimit = this.lookupPPLimitByBK(buildingKnowledge);
 
         //init default subsytem stats
         this.generatedEnergyMult = 1;
@@ -23,8 +20,8 @@ export default class shipCalculator {
         this.genTypeBool = this.palette.CheckPowerSource;
         this.integrityFieldGeneratorCount = 0;
         //engine calc
-        this.thrusterCount = 0;
         this.armorBlocks = 0;
+        this.thrusterCount = 0;
 
         //init calculator output variables
         //shield calc
@@ -38,61 +35,37 @@ export default class shipCalculator {
         this.eGenCountEngines = 0;
         this.eCount = 0;
         this.cQCountEngines = 0;
+
+        //set initial BK
+        this.changeBuildingKnowledge(buildingKnowledge);
     }
 
+    //Triggers a full ship calculation
+    runCalcAll(){
+        console.log(this)
+    }
+
+    //change Building Knowledge and handle subsequent changes
     changeBuildingKnowledge(newBK) {
         this.buildingKnowledge = newBK;
+        this.palette.setAll(newBK, this.optimization, this.buildingKnowledge);
+        this.changePPLimit(this.lookupPPLimitByBK(newBK));
     }
     
-    //sets the PPLimit based on building Knowledge level
-    setPPLimitToBK() {
-        if (this.buildingKnowledge = "iron") {this.PPLimit = 128}
-        else if (this.buildingKnowledge = "titanium") {this.PPLimit = 800}
-        else if (this.buildingKnowledge = "naonite") {this.PPLimit = 2000}
-        else if (this.buildingKnowledge = "trinium") {this.PPLimit = 5000}
-        else if (this.buildingKnowledge = "xanion") {this.PPLimit = 12500}
-        else if (this.buildingKnowledge = "ogonite") {this.PPLimit = 31250}
-        else if (this.buildingKnowledge = "avorion") {this.PPLimit = 78125}
+    //returns the PPLimit based on current building Knowledge level
+    lookupPPLimitByBK(BK) {
+        if (BK == "iron") {return 128;}
+        else if (BK == "titanium") {return 800;}
+        else if (BK == "naonite") {return 2000;}
+        else if (BK == "trinium") {return 5000;}
+        else if (BK == "xanion") {return 12500;}
+        else if (BK == "ogonite") {return 31250;}
+        else if (BK == "avorion") {return 78125;}
     }
 
-    //manually insert PPLimit
+    //change PPLimit and handle subsequent changes
     changePPLimit(newLimit) {
         this.PPLimit = newLimit;
-    }
-
-
-
-    //block palette
-
-    // currently doesnt have palettes to pull from
-    // could make custom palettes too
-    // will be similar to material class in blockStats
-    // light will find the most weight effcient per blocks unique output
-    // pp efficient will select the material with highest unique output
-
-    //selects the palette of blocks to calculate stats with based on the Building Knowledge Level
-    selectBlockPalette(optimization) {
-        //light weight determines if the palette should focus on weight efficiency or processing power efficiency
-        //true = weigh efficient
-        //false = processing power efficiency
-        if (optimization == 'weight') {
-            if (this.buildingKnowledge = "iron") {this.palette = ironPaletteLight}
-            else if (this.buildingKnowledge = "titanium") {this.palette = titaniumPaletteLight}
-            else if (this.buildingKnowledge = "naonite") {this.palette = naonitePaletteLight}
-            else if (this.buildingKnowledge = "trinium") {this.palette = triniumPaletteLight}
-            else if (this.buildingKnowledge = "xanion") {this.palette = xanionPaletteLight}
-            else if (this.buildingKnowledge = "ogonite") {this.palette = ogonitePaletteLight}
-            else if (this.buildingKnowledge = "avorion") {this.palette = avorionPaletteLight}
-        }
-        else if(optimization == 'processingPower') {
-            if (this.buildingKnowledge = "iron") {this.palette = ironPalette}
-            else if (this.buildingKnowledge = "titanium") {this.palette = titaniumPalette}
-            else if (this.buildingKnowledge = "naonite") {this.palette = naonitePalette}
-            else if (this.buildingKnowledge = "trinium") {this.palette = triniumPalette}
-            else if (this.buildingKnowledge = "xanion") {this.palette = xanionPalette}
-            else if (this.buildingKnowledge = "ogonite") {this.palette = ogonitePalette}
-            else if (this.buildingKnowledge = "avorion") {this.palette = avorionPalette}
-        }
     }
 
     //shields
@@ -251,20 +224,22 @@ class palette {
     //this function is self calling and loopEscape sets itself to break the loop automatically
     setType(type, material, BK, opti, best, loopEscape){
         //check exit / loopEscape condition
-        if (loopEscape == material) { this[type] = blockList[material][type] }
+        if (loopEscape == material) { this[type] = this.blockList[material][type] }
         else { 
             //set exit condition
             if (loopEscape == undefined) {loopEscape = material}
 
+            let bipass = false
+
             //test block validity
-            if (blockList[material][type].cost$ == 'N/A') {
+            if (this.blockList[material][type].cost$ == 'N/A') {
                 //check optimization type
                 if (opti == 'processingPower') {
                     //save temp variables for faster calc
                     //current material
-                    let newBlock = blockList[material][type];
+                    let newBlock = this.blockList[material][type];
                     //previous best material
-                    let bestBlock = blockList[best][type];
+                    let bestBlock = this.blockList[best][type];
                     if (newBlock.other >= bestBlock.other) {
                         // if they are equal check weight efficiency
                         if (newBlock.other = bestBlock.other) {
@@ -280,9 +255,9 @@ class palette {
                 //checking weight optimization type
                 else if (opti == 'weight') {
                     //current material
-                    let newBlock = blockList[material][type];
+                    let newBlock = this.blockList[material][type];
                     //previous best material
-                    let bestBlock = blockList[best][type];
+                    let bestBlock = this.blockList[best][type];
                     if (
                         (newBlock.weight/newBlock.other) 
                         <=
@@ -292,7 +267,7 @@ class palette {
             
                 // no optimization - exit
                 else {
-                    this[type] = blockList[material][type]
+                    this[type] = this.blockList[material][type]
                     bipass = true; //allows code to end by jumping over loop
                 }
             }
@@ -314,31 +289,31 @@ class palette {
     }//end of setTypeFunction
     
     //calls the setType for all types of block
-    setAll(material, opti){
-        setType('armor', material, BK, opti);
-        setType('engine', material, BK, opti);
-        setType('cargoBay', material, BK, opti);
-        setType('crewQuarters', material, BK, opti);
-        setType('thruster', material, BK, opti);
-        setType('directionalThruster', material, BK, opti);
-        setType('gyroArray', material, BK, opti);
-        setType('inertialDampener', material, BK, opti);
-        setType('hangar', material, BK, opti);
-        setType('dock', material, BK, opti);
-        setType('flightRecorder', material, BK, opti);
-        setType('assembly', material, BK, opti);
-        setType('torpedoLauncher', material, BK, opti);
-        setType('torpedoStorage', material, BK, opti);
-        setType('shieldGenerator', material, BK, opti);
-        setType('energyContainer', material, BK, opti);
-        setType('generator', material, BK, opti);
-        setType('integrityFieldGenerator', material, BK, opti);
-        setType('computerCore', material, BK, opti);
-        setType('hyperspaceCore', material, BK, opti);
-        setType('transporter', material, BK, opti);
-        setType('academy', material, BK, opti);
-        setType('cloningPods', material, BK, opti);
-        setType('solarPanel', material, BK, opti);
+    setAll(material, opti, BK){
+        this.setType('armor', material, BK, opti);
+        this.setType('engine', material, BK, opti);
+        this.setType('cargoBay', material, BK, opti);
+        this.setType('crewQuarters', material, BK, opti);
+        this.setType('thruster', material, BK, opti);
+        this.setType('directionalThruster', material, BK, opti);
+        this.setType('gyroArray', material, BK, opti);
+        this.setType('inertialDampener', material, BK, opti);
+        this.setType('hangar', material, BK, opti);
+        this.setType('dock', material, BK, opti);
+        this.setType('flightRecorder', material, BK, opti);
+        this.setType('assembly', material, BK, opti);
+        this.setType('torpedoLauncher', material, BK, opti);
+        this.setType('torpedoStorage', material, BK, opti);
+        this.setType('shieldGenerator', material, BK, opti);
+        this.setType('energyContainer', material, BK, opti);
+        this.setType('generator', material, BK, opti);
+        this.setType('integrityFieldGenerator', material, BK, opti);
+        this.setType('computerCore', material, BK, opti);
+        this.setType('hyperspaceCore', material, BK, opti);
+        this.setType('transporter', material, BK, opti);
+        this.setType('academy', material, BK, opti);
+        this.setType('cloningPods', material, BK, opti);
+        this.setType('solarPanel', material, BK, opti);
     }
 
     CheckPowerSource(){
@@ -359,5 +334,38 @@ class palette {
         //         return 'error';
         //     }
         // }
+    }
+
+    //block palette
+
+    // currently doesnt have premade palettes to pull from
+    // could make custom palettes too
+    // will be similar to material class in blockStats
+    // light will find the most weight effcient per blocks unique output
+    // pp efficient will select the material with highest unique output
+
+    //selects the palette of blocks to calculate stats with based on the Building Knowledge Level
+    selectBlockPalettePreset(optimization) {
+        //light weight determines if the palette should focus on weight efficiency or processing power efficiency
+        //true = weigh efficient
+        //false = processing power efficiency
+        if (optimization == 'weight') {
+            if (this.buildingKnowledge = "iron") {this.palette = ironPaletteLight}
+            else if (this.buildingKnowledge = "titanium") {this.palette = titaniumPaletteLight}
+            else if (this.buildingKnowledge = "naonite") {this.palette = naonitePaletteLight}
+            else if (this.buildingKnowledge = "trinium") {this.palette = triniumPaletteLight}
+            else if (this.buildingKnowledge = "xanion") {this.palette = xanionPaletteLight}
+            else if (this.buildingKnowledge = "ogonite") {this.palette = ogonitePaletteLight}
+            else if (this.buildingKnowledge = "avorion") {this.palette = avorionPaletteLight}
+        }
+        else if(optimization == 'processingPower') {
+            if (this.buildingKnowledge = "iron") {this.palette = ironPalette}
+            else if (this.buildingKnowledge = "titanium") {this.palette = titaniumPalette}
+            else if (this.buildingKnowledge = "naonite") {this.palette = naonitePalette}
+            else if (this.buildingKnowledge = "trinium") {this.palette = triniumPalette}
+            else if (this.buildingKnowledge = "xanion") {this.palette = xanionPalette}
+            else if (this.buildingKnowledge = "ogonite") {this.palette = ogonitePalette}
+            else if (this.buildingKnowledge = "avorion") {this.palette = avorionPalette}
+        }
     }
 }
