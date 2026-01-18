@@ -2,7 +2,8 @@
 
 // universal block type to hold stats
 class block {
-    constructor(name, cost$, costM, health, weight, procPower, reqEnergy, other, otherType, reqMechanic, reqEngineer) {
+    constructor(material, name, cost$, costM, health, weight, procPower, reqEnergy, other, otherType, reqMechanic, reqEngineer) {
+        this.material = material;
         this.name = name;
         this.cost$ = Number(cost$);
         this.costM = Number(costM);
@@ -104,7 +105,8 @@ class allBlocks {
                     element[7],
                     element[8],
                     element[9],
-                    element[10]
+                    element[10],
+                    element[11]
                 ) 
             )
         });

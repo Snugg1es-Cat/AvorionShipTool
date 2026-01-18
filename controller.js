@@ -28,7 +28,7 @@ import shipCalculator from './shipCalculator.js';
         //Other Inputs
         const PPLimitTextBox = document.getElementById('PPLimitTextBox');
         const armorTotalTextBox = document.getElementById('armorTotalTextBox');
-        const thrusterTotalTextBox = document.getElementById('thrusterTotaltextBox');
+        const thrusterTotalTextBox = document.getElementById('thrusterTotalTextBox');
 
 //event listeners
     //Block Calculator
@@ -284,7 +284,7 @@ import shipCalculator from './shipCalculator.js';
         ship.PPLimit = validateAsNumericInput(PPLimitTextBox.value);
 
         //set initial textbox values on reload
-            //block calc runs the calc so which this it automatically
+            //block calc runs the calc so there it is automatic
         setOutputAsRegOrPH(shieldAllocationTextBox, validateAsNumericInput(shieldAllocationTextBox.value));
         setOutputAsRegOrPH(engineAllocationTextBox, validateAsNumericInput(engineAllocationTextBox.value));
         setOutputAsRegOrPH(armorTotalTextBox, validateAsNumericInput(armorTotalTextBox.value));

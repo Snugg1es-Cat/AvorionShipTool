@@ -17,7 +17,7 @@ export default class shipCalculator {
         this.enginePP = 0;
 
         //input variables
-        this.genTypeBool = this.palette.CheckPowerSource;
+        this.genTypeBool = this.palette.CheckPowerSource();
         this.integrityFieldGeneratorCount = 0;
         //engine calc
         this.armorBlocks = 0;
@@ -42,7 +42,10 @@ export default class shipCalculator {
 
     //Triggers a full ship calculation
     runCalcAll(){
-        console.log(this)
+        console.log(this.palette)
+        console.log(this.eGenCountShields)
+        this.shieldCalcHandler();
+        console.log(this.eGenCountShields)
     }
 
     //change Building Knowledge and handle subsequent changes
@@ -80,6 +83,7 @@ export default class shipCalculator {
             if (this.palette.shieldGenerator.other == 0) {
                 // shields invalid set to zero
                 blockCountArray = [0,0]
+                console.log('shield gen bad')
             }
             else {
                 //shield generator as variable
@@ -91,7 +95,7 @@ export default class shipCalculator {
                 //shield generator and power sources are valid
             
                 //logic
-                blockCountArray = calcBlockCount(this.shieldPP, eGen, sGen)
+                blockCountArray = calcBlockCount(this.shieldPP, eGen, sGen);
             }
             //output
             //block counts
@@ -114,6 +118,7 @@ export default class shipCalculator {
         let ratio = eGen.other*this.generatedEnergyMult / block.reqEnergy;
         let genCount = ppLimit/(ratio+1);
         let blockCount = genCount*ratio;
+        console.log({genCount})
 
         return ([genCount , blockCount]);
     }
@@ -318,7 +323,7 @@ class palette {
 
     CheckPowerSource(){
         //shield gen is valid checking power source
-        if (this.palette.generator.other > 0) {return true;}
+        if (this.generator.other > 0) {return true;}
         //generator failed attempting solarPanel as backup
         else {return false;}
         //there should be no case when solar panels are invalid
