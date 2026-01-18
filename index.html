@@ -26,8 +26,7 @@
               <option value="avorion">Avorion</option>
             </select>
           </form>
-        </li>
-        <li>
+        
           <!--Drop Down for blocks-->
           <form action="blockForm" method="POST">
             <label for="block">Block</label>
@@ -80,8 +79,7 @@
               <option value="hullWhiteStripesA">Hull (White Stripes A)</option>
             </select>
           </form>
-        </li>
-        <li>
+        
           <!--Drop Down for stats-->
           <form action="statForm" method="POST">
             <label for="stat">Stats</label>
@@ -164,15 +162,35 @@
           <input type="text" inputmode="numeric" id="armorTotalTextBox" name="armor">
         </ul>
         <ul>  
-          <label for="thrusterTotaltextBox">Thruster:</label>
-          <input type="text" inputmode="numeric" id="thrusterTotaltextBox" name="thruster">
+          <label for="thrusterTotalTextBox">Thruster:</label>
+          <input type="text" inputmode="numeric" id="thrusterTotalTextBox" name="thruster">
+        </ul>
+        <ul>  
+          <label for="weightTextBox">Extra Weight:</label>
+          <input type="text" inputmode="numeric" id="weightTextBox" name="weight">
+        </ul>
+        <ul>  
+          <label for="crewTextBox">Extra Crew:</label>
+          <input type="text" inputmode="numeric" id="crewTextBox" name="thruster">
         </ul>
       </li>
       
 
       <!--output stats-->
       <li>
-        <ul></ul>
+        <!--Shield-->
+        <ul><p>Shield Strength: <span id="outputShieldStrength">Meow</span></p></ul>
+        <ul><p>Shield Count: <span id="outputShieldCount">Meow</span></p></ul>
+        <ul><p>Generator Count: <span id="outputShieldGen">Meow</span></p></ul>
+        <ul><p>Total Weight: <span id="outputShieldWeight">Meow</span></p></ul>
+
+        <!--Engines-->
+        <ul><p>Max Speed: <span id="outputEngineWeight">Meow</span></p></ul>
+        <ul><p>Acceleration: <span id="outputEngineAcceleration">Meow</span></p></ul>
+        <ul><p>Engine Count: <span id="outputEngineCount">Meow</span></p></ul>
+        <ul><p>Generator Count: <span id="outputEngineGen">Meow</span></p></ul>
+        <ul><p>Crew Quarters Count: <span id="outputEngineCrewQ">Meow</span></p></ul>
+        <ul><p>Total Weight: <span id="outputEngineWeight">Meow</span></p></ul>
       </li>
     </div>
   </main>
