@@ -1,0 +1,302 @@
+Tier,Block,Cost credits,materials,Health,weight,Mechanics Req,Engineers Req,processing power,required energy,other,other Label
+Iron,Blank Hull,12,5,4,51,,,0,0,,Unlabeled Other
+Iron,Smart Hull,12,5,4,51,,,1,0.5,,Unlabeled Other
+Iron,Armor,4,8,25,85,,,0,0,,Unlabeled Other
+Iron,Engine,28,13,2,25,,,1,4,19600,Thrust (N)
+Iron,Cargo Bay,28,13,4,17,,,1,0,0.44,CargoHold
+Iron,Crew Quarters,25,12,4,34,,,1,5,,Crew Quarters
+Iron,Thruster,17,8,1,26,,,1,4.5,,Thrust (N)
+Iron,Directional Thruster,17,8,1,26,,,1,3.75,,Thrust (N)
+Iron,Gyro Array,56,25,2,9,,,1,7.32,,Unlabeled Other
+Iron,Inertia Dampner,334,150,1,26,,,1,54.39,,Unlabeled Other
+Iron,Framework,1,1,0(0.005),0(0.034),,,0,0,,Unlabeled Other
+Iron,Scaffold,1,1,0(0.005),0(0.034),,,0,0,,Unlabeled Other
+Iron,Hangar,N/A,N/A,N/A,N/A,,,N/A,N/A,,Hangar Space
+Iron,Dock,50,23,2,17,,,0,0,,Unlabeled Other
+Iron,Turret Rotation Lock,23,10,2,1,,,0,0,,Unlabeled Other
+Iron,Flight Recorder,223,100,8,85,,,1,0,,Unlabeled Other
+Iron,Assembly,556,30,2,51,,,1,0,,Production
+Iron,Torpedo Launcher,50,23,4,51,,,1,0,,Unlabeled Other
+Iron,Torpedo Storage,50,23,4,51,,,1,0,,Torpedo Storage
+Iron,Turret Base,23,10,8,68,,,0,0,,Unlabeled Other
+Iron,Shield Generator,N/A,N/A,N/A,N/A,,,N/A,N/A,,Shield Strength
+Iron,Energy Container,N/A,N/A,N/A,N/A,,,N/A,N/A,,Energy Storage (MW)
+Iron,Generator,N/A,N/A,N/A,N/A,,,N/A,N/A,,Energy Generation (MW)
+Iron,Integrity Field Generator,N/A,N/A,N/A,N/A,,,N/A,N/A,,Unlabeled Other
+Iron,Computer Core,N/A,N/A,N/A,N/A,,,N/A,N/A,,Unlabeled Other
+Iron,Hyperspace Core,N/A,N/A,N/A,N/A,,,N/A,N/A,,Unlabeled Other
+Iron,Transporter,N/A,N/A,N/A,N/A,,,N/A,N/A,,Unlabeled Other
+Iron,Academy,N/A,N/A,N/A,N/A,,,N/A,N/A,,Unlabeled Other
+Iron,Cloning Pods,N/A,N/A,N/A,N/A,,,N/A,N/A,,Unlabeled Other
+Iron,Solar Panel,77,12,0(0.25),9,,,0,0,6,Power Generation (MW)
+Iron,Light,12,5,0(0.25),17,,,0,0,,Unlabeled Other
+Iron,Glow,12,5,1,17,,,0,0,,Unlabeled Other
+Iron,Glass,12,1,1,17,,,0,0,,Unlabeled Other
+Iron,Reflector,N/A,N/A,N/A,N/A,,,N/A,N/A,,Unlabeled Other
+Iron,Stone,0,1,4,204,,,0,0,,Unlabeled Other
+Iron,Hologram,NULL,NULL,NULL,NULL,,,NULL,NULL,,Unlabeled Other
+Iron,Rich Stone,0,1,6,204,,,0,0,,Unlabeled Other
+Iron,Super Rich Stone,0,3,35,425,,,0,0,,Unlabeled Other
+Iron,Ship Name,12,5,2,51,,,0,0,,Unlabeled Other
+Iron,Ship Emblem,12,5,4,51,,,0,0,,Unlabeled Other
+Iron,Hull (Alternate Pattern A),12,5,4,51,,,0,0,,Unlabeled Other
+Iron,Hull (Vivid Colors),12,5,4,51,,,0,0,,Unlabeled Other
+Iron,Hull (White Stripes A),12,5,4,51,,,0,0,,Unlabeled Other
+Titanium,Blank Hull,15,5,6,30,,,0,0,,Unlabeled Other
+Titanium,Smart Hull,15,5,6,30,,,1,0.5,,Unlabeled Other
+Titanium,Armor,5,8,37,50,,,0,0,,Unlabeled Other
+Titanium,Engine,38,13,3,15,,,1,3.82,19995,Thrust (N)
+Titanium,Cargo Bay,38,13,6,10,,,1,0,0.44,CargoHold
+Titanium,Crew Quarters,34,12,6,20,,,1,5,,Crew Quarters
+Titanium,Thruster,23,8,1,15,,,1,4.3,,Thrust (N)
+Titanium,Directional Thruster,23,8,1,15,,,1,3.58,,Thrust (N)
+Titanium,Gyro Array,75,N/A,3,5,,,1,7.61,,Unlabeled Other
+Titanium,Inertia Dampner,N/A,1,N/A,N/A,,,N/A,N/A,,Unlabeled Other
+Titanium,Framework,1,1,0,0,,,0,0,,Unlabeled Other
+Titanium,Scaffold,1,1,0,0,,,0,0,,Unlabeled Other
+Titanium,Hangar,N/A,N/A,N/A,N/A,,,N/A,N/A,,Hangar Space
+Titanium,Dock,68,23,3,10,,,0,0,,Unlabeled Other
+Titanium,Turret Rotation Lock,30,10,3,10,,,0,0,,Unlabeled Other
+Titanium,Flight Recorder,300,100,12,50,,,1,0,,Unlabeled Other
+Titanium,Assembly,750,30,3,30,,,1,0,,Production
+Titanium,Torpedo Launcher,68,23,6,30,,,1,0,,Unlabeled Other
+Titanium,Torpedo Storage,68,23,6,30,,,1,0,,Torpedo Storage
+Titanium,Turret Base,30,10,12,40,,,0,0,,Unlabeled Other
+Titanium,Shield Generator,N/A,N/A,N/A,N/A,,,N/A,N/A,,Shield Strength
+Titanium,Energy Container,53,18,1,30,,,1,0,2.06,Energy Storage (MW)
+Titanium,Generator,600,50,1,40,,,1,0,82.5,Energy Generation (MW)
+Titanium,Integrity Field Generator,550,100,1,40,,,1,9.37,,Unlabeled Other
+Titanium,Computer Core,N/A,N/A,N/A,N/A,,,N/A,N/A,,Unlabeled Other
+Titanium,Hyperspace Core,N/A,N/A,N/A,N/A,,,N/A,N/A,,Unlabeled Other
+Titanium,Transporter,N/A,N/A,N/A,N/A,,,N/A,N/A,,Unlabeled Other
+Titanium,Academy,N/A,N/A,N/A,N/A,,,N/A,N/A,,Unlabeled Other
+Titanium,Cloning Pods,N/A,N/A,N/A,N/A,,,N/A,N/A,,Unlabeled Other
+Titanium,Solar Panel,86,12,0,5,,,0,0,6,Power Generation (MW)
+Titanium,Light,15,5,0,10,,,0,0,,Unlabeled Other
+Titanium,Glow,15,5,1,10,,,0,0,,Unlabeled Other
+Titanium,Glass,15,1,1,10,,,0,0,,Unlabeled Other
+Titanium,Reflector,N/A,N/A,N/A,N/A,,,N/A,N/A,,Unlabeled Other
+Titanium,Stone,0,1,6,120,,,0,0,,Unlabeled Other
+Titanium,Hologram,NULL,NULL,NULL,NULL,,,NULL,NULL,,Unlabeled Other
+Titanium,Rich Stone,0,1,9,120,,,0,0,,Unlabeled Other
+Titanium,Super Rich Stone,0,3,52,250,,,0,0,,Unlabeled Other
+Titanium,Ship Name,15,5,6,30,,,0,0,,Unlabeled Other
+Titanium,Ship Emblem,15,5,6,30,,,0,0,,Unlabeled Other
+Titanium,Hull (Alternate Pattern A),15,5,6,30,,,0,0,,Unlabeled Other
+Titanium,Hull (Vivid Colors),15,5,6,30,,,0,0,,Unlabeled Other
+Titanium,Hull (White Stripes A),15,5,6,30,,,0,0,,Unlabeled Other
+Naonite,Blank Hull,21,5,9,33,,,0,0,,Unlabeled Other
+Naonite,Smart Hull,21,5,9,33,,,1,0.5,,Unlabeled Other
+Naonite,Armor,N/A,N/A,N/A,N/A,,,N/A,N/A,,Unlabeled Other
+Naonite,Engine,51,13,4,16,,,1,3.6,19392,Thrust (N)
+Naonite,Cargo Bay,51,13,9,11,,,1,0,,CargoHold
+Naonite,Crew Quarters,46,12,9,22,,,1,5,,Crew Quarters
+Naonite,Thruster,31,8,1,16,,,1,4.05,,Thrust (N)
+Naonite,Directional Thruster,31,8,1,16,,,1,3.37,,Thrust (N)
+Naonite,Gyro Array,102,25,4,5,,,1,8.07,,Unlabeled Other
+Naonite,Inertia Dampner,N/A,N/A,N/A,N/A,,,N/A,N/A,,Unlabeled Other
+Naonite,Framework,2,1,0,0,,,0,0,,Unlabeled Other
+Naonite,Scaffold,2,1,0,0,,,0,0,,Unlabeled Other
+Naonite,Hangar,N/A,N/A,N/A,N/A,,,N/A,N/A,,Hangar Space
+Naonite,Dock,92,23,4,11,,,0,0,,Unlabeled Other
+Naonite,Turret Rotation Lock,41,10,4,33,,,0,0,,Unlabeled Other
+Naonite,Flight Recorder,405,100,18,55,,,1,0,,Unlabeled Other
+Naonite,Assembly,1013,30,4,33,,,1,0,,Production
+Naonite,Torpedo Launcher,92,23,9,33,,,1,0,,Unlabeled Other
+Naonite,Torpedo Storage,92,23,9,33,,,1,0,,Torpedo Storage
+Naonite,Turret Base,41,10,18,44,,,0,0,,Unlabeled Other
+Naonite,Shield Generator,1258,50,1,44,,,1,23.44,112,Shield Strength
+Naonite,Energy Container,71,18,2,33,,,1,0,2.37,Energy Storage (MW)
+Naonite,Generator,653,50,1,44,,,1,0,93.75,Energy Generation (MW)
+Naonite,Integrity Field Generator,655,100,1,44,,,1,9.37,,Unlabeled Other
+Naonite,Computer Core,N/A,N/A,N/A,N/A,,,N/A,N/A,,Unlabeled Other
+Naonite,Hyperspace Core,2013,250,1,44,,,1,25,,Unlabeled Other
+Naonite,Transporter,N/A,N/A,N/A,N/A,,,N/A,N/A,,Unlabeled Other
+Naonite,Academy,N/A,N/A,N/A,N/A,,,N/A,N/A,,Unlabeled Other
+Naonite,Cloning Pods,N/A,N/A,N/A,N/A,,,N/A,N/A,,Unlabeled Other
+Naonite,Solar Panel,98,12,1,5,,,0,0,6,Power Generation (MW)
+Naonite,Light,21,5,1,11,,,0,0,,Unlabeled Other
+Naonite,Glow,21,5,2,11,,,0,0,,Unlabeled Other
+Naonite,Glass,21,1,2,11,,,0,0,,Unlabeled Other
+Naonite,Reflector,21,1,2,11,,,0,0,,Unlabeled Other
+Naonite,Stone,0,1,9,132,,,0,0,,Unlabeled Other
+Naonite,Hologram,NULL,NULL,NULL,NULL,,,NULL,NULL,,Unlabeled Other
+Naonite,Rich Stone,0,1,13,132,,,0,0,,Unlabeled Other
+Naonite,Super Rich Stone,0,3,79,275,,,0,0,,Unlabeled Other
+Naonite,Ship Name,21,5,9,33,,,0,0,,Unlabeled Other
+Naonite,Ship Emblem,21,5,9,33,,,0,0,,Unlabeled Other
+Naonite,Hull (Alternate Pattern A),21,5,9,33,,,0,0,,Unlabeled Other
+Naonite,Hull (Vivid Colors),21,5,9,33,,,0,0,,Unlabeled Other
+Naonite,Hull (White Stripes A),21,5,9,33,,,0,0,,Unlabeled Other
+Trinium,Blank Hull,28,5,13,21,,,0,0,,Unlabeled Other
+Trinium,Smart Hull,28,5,13,21,,,1,0.5,,Unlabeled Other
+Trinium,Armor,10,8,84,35,,,0,0,,Unlabeled Other
+Trinium,Engine,69,13,7,10,,,1,3.38,19050,Thrust (N)
+Trinium,Cargo Bay,69,13,13,7,,,1,0,,CargoHold
+Trinium,Crew Quarters,62,12,13,14,,,1,5,,Crew Quarters
+Trinium,Thruster,42,8,2,10,,,1,3.8,,Thrust (N)
+Trinium,Directional Thruster,42,8,2,10,,,1,3.17,,Thrust (N)
+Trinium,Gyro Array,137,25,7,3,,,1,8.82,,Unlabeled Other
+Trinium,Inertia Dampner,N/A,N/A,N/A,N/A,,,N/A,N/A,,Unlabeled Other
+Trinium,Framework,2,1,0,0,,,0,0,,Unlabeled Other
+Trinium,Scaffold,2,1,0,0,,,0,0,,Unlabeled Other
+Trinium,Hangar,124,23,2,1,,,0,0,,Hangar Space
+Trinium,Dock,124,23,7,7,,,0,0,,Unlabeled Other
+Trinium,Turret Rotation Lock,55,10,7,21,,,0,0,,Unlabeled Other
+Trinium,Flight Recorder,547,100,27,35,,,1,0,,Unlabeled Other
+Trinium,Assembly,1367,30,7,21,,,1,0,,Production
+Trinium,Torpedo Launcher,124,23,13,21,,,1,0,,Unlabeled Other
+Trinium,Torpedo Storage,124,23,13,21,,,1,0,,Torpedo Storage
+Trinium,Turret Base,55,10,27,28,,,0,0,,Unlabeled Other
+Trinium,Shield Generator,1471,150,2,28,,,1,27.19,169,Shield Strength
+Trinium,Energy Container,96,18,3,21,,,1,0,2.72,Energy Storage (MW)
+Trinium,Generator,724,50,2,28,,,1,0,108.75,Energy Generation (MW)
+Trinium,Integrity Field Generator,797,100,2,28,,,1,9.37,,Unlabeled Other
+Trinium,Computer Core,1137,25,2,28,,,7,0,,Unlabeled Other
+Trinium,Hyperspace Core,2367,250,2,28,,,1,25,,Unlabeled Other
+Trinium,Transporter,N/A,N/A,N/A,N/A,,,N/A,N/A,,Unlabeled Other
+Trinium,Academy,62,12,10,28,,,1,0,,Unlabeled Other
+Trinium,Cloning Pods,N/A,N/A,N/A,N/A,,,N/A,N/A,,Unlabeled Other
+Trinium,Solar Panel,115,12,1,3,,,0,0,6,Power Generation (MW)
+Trinium,Light,28,5,1,7,,,0,0,,Unlabeled Other
+Trinium,Glow,28,5,3,7,,,0,0,,Unlabeled Other
+Trinium,Glass,28,1,3,7,,,0,0,,Unlabeled Other
+Trinium,Reflector,28,1,3,7,,,0,0,,Unlabeled Other
+Trinium,Stone,0,1,13,84,,,0,0,,Unlabeled Other
+Trinium,Hologram,NULL,NULL,NULL,NULL,,,NULL,NULL,,Unlabeled Other
+Trinium,Rich Stone,0,1,20,84,,,0,0,,Unlabeled Other
+Trinium,Super Rich Stone,0,3,118,175,,,0,0,,Unlabeled Other
+Trinium,Ship Name,28,5,13,21,,,0,0,,Unlabeled Other
+Trinium,Ship Emblem,28,5,13,21,,,0,0,,Unlabeled Other
+Trinium,Hull (Alternate Pattern A),28,5,13,21,,,0,0,,Unlabeled Other
+Trinium,Hull (Vivid Colors),28,5,13,21,,,0,0,,Unlabeled Other
+Trinium,Hull (White Stripes A),28,5,13,21,,,0,0,,Unlabeled Other
+Xanion,Blank Hull,37,5,20,27,,,0,0,,Unlabeled Other
+Xanion,Smart Hull,37,5,20,27,,,1,0.5,,Unlabeled Other
+Xanion,Armor,N/A,N/A,N/A,N/A,,,N/A,N/A,,Unlabeled Other
+Xanion,Engine,93,13,10,13,,,1,3.18,19253,Thrust (N)
+Xanion,Cargo Bay,93,13,20,9,,,1,0,,CargoHold
+Xanion,Crew Quarters,84,12,20,18,,,1,5,,Crew Quarters
+Xanion,Thruster,56,8,3,13,,,1,3.57,,Thrust (N)
+Xanion,Directional Thruster,56,8,3,13,,,1,2.98,,Thrust (N)
+Xanion,Gyro Array,185,25,10,4,,,1,10.06,,Unlabeled Other
+Xanion,Inertia Dampner,N/A,N/A,N/A,N/A,,,N/A,N/A,,Unlabeled Other
+Xanion,Framework,2,1,0,0,,,0,0,,Unlabeled Other
+Xanion,Scaffold,2,1,0,0,,,0,0,,Unlabeled Other
+Xanion,Hangar,167,23,3,2,,,0,0,,Hangar Space
+Xanion,Dock,167,23,10,9,,,0,0,,Unlabeled Other
+Xanion,Turret Rotation Lock,74,10,10,27,,,0,0,,Unlabeled Other
+Xanion,Flight Recorder,739,100,40,45,,,1,0,,Unlabeled Other
+Xanion,Assembly,1845,30,10,27,,,1,0,,Production
+Xanion,Torpedo Launcher,167,23,20,27,,,1,0,,Unlabeled Other
+Xanion,Torpedo Storage,167,23,20,27,,,1,0,,Torpedo Storage
+Xanion,Turret Base,74,10,40,36,,,0,0,,Unlabeled Other
+Xanion,Shield Generator,1758,150,3,36,,,1,31.87,283,Shield Strength
+Xanion,Energy Container,130,18,5,27,,,1,0,3.19,Energy Storage (MW)
+Xanion,Generator,820,50,3,36,,,1,0,127.5,Energy Generation (MW)
+Xanion,Integrity Field Generator,989,100,3,36,,,1,9.37,,Unlabeled Other
+Xanion,Computer Core,1185,25,3,36,,,7,0,,Unlabeled Other
+Xanion,Hyperspace Core,2846,250,3,36,,,1,25,,Unlabeled Other
+Xanion,Transporter,2496,250,3,27,,,0,0,,Unlabeled Other
+Xanion,Academy,84,12,15,36,,,1,0,,Unlabeled Other
+Xanion,Cloning Pods,739,100,13,45,,,1,0,,Unlabeled Other
+Xanion,Solar Panel,137,12,1,4,,,0,0,6,Power Generation (MW)
+Xanion,Light,37,5,1,9,,,0,0,,Unlabeled Other
+Xanion,Glow,37,5,5,9,,,0,0,,Unlabeled Other
+Xanion,Glass,37,1,5,9,,,0,0,,Unlabeled Other
+Xanion,Reflector,37,1,5,9,,,0,0,,Unlabeled Other
+Xanion,Stone,0,1,20,108,,,0,0,,Unlabeled Other
+Xanion,Hologram,NULL,NULL,NULL,NULL,,,NULL,NULL,,Unlabeled Other
+Xanion,Rich Stone,0,1,30,108,,,0,0,,Unlabeled Other
+Xanion,Super Rich Stone,0,3,173,225,,,0,0,,Unlabeled Other
+Xanion,Ship Name,37,5,20,27,,,0,0,,Unlabeled Other
+Xanion,Ship Emblem,37,5,20,27,,,0,0,,Unlabeled Other
+Xanion,Hull (Alternate Pattern A),37,5,20,27,,,0,0,,Unlabeled Other
+Xanion,Hull (Vivid Colors),37,5,20,27,,,0,0,,Unlabeled Other
+Xanion,Hull (White Stripes A),37,5,20,27,,,0,0,,Unlabeled Other
+Ogonite,Blank Hull,,,3,36,,,0,25,,Unlabeled Other
+Ogonite,Smart Hull,same as bank hull,,,,,,1,,,Unlabeled Other
+Ogonite,Armor,,,,,,,0,,,Unlabeled Other
+Ogonite,Engine,,,,,,,1,,,Thrust (N)
+Ogonite,Cargo Bay,same as engine,,,,,,1,,,CargoHold
+Ogonite,Crew Quarters,,,,,,,1,,,Crew Quarters
+Ogonite,Thruster,,,,,,,1,,,Thrust (N)
+Ogonite,Directional Thruster,same as thruster,,,,,,1,,,Thrust (N)
+Ogonite,Gyro Array,,,,,,,1,,,Unlabeled Other
+Ogonite,Inertia Dampner,,,N/A,N/A,,,N/A,N/A,,Unlabeled Other
+Ogonite,Framework,,,,,,,0,,,Unlabeled Other
+Ogonite,Scaffold,same as framework,,,,,,0,,,Unlabeled Other
+Ogonite,Hangar,,,,,,,N/A,,,Hangar Space
+Ogonite,Dock,same as hanger,,,,,,0,,,Unlabeled Other
+Ogonite,Turret Rotation Lock,,,,,,,0,,,Unlabeled Other
+Ogonite,Flight Recorder,,,,,,,1,,,Unlabeled Other
+Ogonite,Assembly,,,,,,,1,,,Production
+Ogonite,Torpedo Launcher,,,,,,,1,,,Unlabeled Other
+Ogonite,Torpedo Storage,,,,,,,1,,,Torpedo Storage
+Ogonite,Turret Base,,,,,,,0,,,Unlabeled Other
+Ogonite,Shield Generator,,,,,,,1,,,Shield Strength
+Ogonite,Energy Container,,,,,,,1,,,Energy Storage (MW)
+Ogonite,Generator,,,,,,,1,,,Energy Generation (MW)
+Ogonite,Integrity Field Generator,,,,,,,1,,,Unlabeled Other
+Ogonite,Computer Core,,,,,,,N/A,,,Unlabeled Other
+Ogonite,Hyperspace Core,,,,,,,N/A,,,Unlabeled Other
+Ogonite,Transporter,,,,,,,N/A,,,Unlabeled Other
+Ogonite,Academy,,,,,,,N/A,,,Unlabeled Other
+Ogonite,Cloning Pods,,,,,,,N/A,,,Unlabeled Other
+Ogonite,Solar Panel,,,,,,,0,,,Power Generation (MW)
+Ogonite,Light,same as bank hull,,,,,,0,,,Unlabeled Other
+Ogonite,Glow,same as bank hull,,,,,,0,,,Unlabeled Other
+Ogonite,Glass,Money only same as bank hull,1,,,,,0,,,Unlabeled Other
+Ogonite,Reflector,Money only same as bank hull,1,,,,,N/A,,,Unlabeled Other
+Ogonite,Stone,0,1,,,,,0,,,Unlabeled Other
+Ogonite,Hologram,NULL,NULL,NULL,NULL,,,NULL,NULL,,Unlabeled Other
+Ogonite,Rich Stone,0,1,,,,,0,,,Unlabeled Other
+Ogonite,Super Rich Stone,0,3,,,,,0,,,Unlabeled Other
+Ogonite,Ship Name,same as bank hull,,,,,,0,,,Unlabeled Other
+Ogonite,Ship Emblem,same as bank hull,,,,,,0,,,Unlabeled Other
+Ogonite,Hull (Alternate Pattern A),same as bank hull,,,,,,0,,,Unlabeled Other
+Ogonite,Hull (Vivid Colors),same as bank hull,,,,,,0,,,Unlabeled Other
+Ogonite,Hull (White Stripes A),same as bank hull,,,,,,0,,,Unlabeled Other
+Avorion,Blank Hull,,,,,,,,,,Unlabeled Other
+Avorion,Smart Hull,,,,,,,,,,Unlabeled Other
+Avorion,Armor,,,,,,,,,,Unlabeled Other
+Avorion,Engine,,,,,,,,,,Thrust (N)
+Avorion,Cargo Bay,,,,,,,,,,CargoHold
+Avorion,Crew Quarters,,,,,,,,,,Crew Quarters
+Avorion,Thruster,,,,,,,,,,Thrust (N)
+Avorion,Directional Thruster,,,,,,,,,,Thrust (N)
+Avorion,Gyro Array,,,,,,,,,,Unlabeled Other
+Avorion,Inertia Dampner,,,,,,,,,,Unlabeled Other
+Avorion,Framework,,,,,,,,,,Unlabeled Other
+Avorion,Scaffold,,,,,,,,,,Unlabeled Other
+Avorion,Hangar,,,,,,,,,,Hangar Space
+Avorion,Dock,,,,,,,,,,Unlabeled Other
+Avorion,Turret Rotation Lock,,,,,,,,,,Unlabeled Other
+Avorion,Flight Recorder,,,,,,,,,,Unlabeled Other
+Avorion,Assembly,,,,,,,,,,Production
+Avorion,Torpedo Launcher,,,,,,,,,,Unlabeled Other
+Avorion,Torpedo Storage,,,,,,,,,,Torpedo Storage
+Avorion,Turret Base,,,,,,,,,,Unlabeled Other
+Avorion,Shield Generator,,,,,,,,,,Shield Strength
+Avorion,Energy Container,,,,,,,,,,Energy Storage (MW)
+Avorion,Generator,,,,,,,,,,Energy Generation (MW)
+Avorion,Integrity Field Generator,,,,,,,,,,Unlabeled Other
+Avorion,Computer Core,,,,,,,,,,Unlabeled Other
+Avorion,Hyperspace Core,,,,,,,,,,Unlabeled Other
+Avorion,Transporter,,,,,,,,,,Unlabeled Other
+Avorion,Academy,,,,,,,,,,Unlabeled Other
+Avorion,Cloning Pods,,,,,,,,,,Unlabeled Other
+Avorion,Solar Panel,,,,,,,,,,Power Generation (MW)
+Avorion,Light,,,,,,,,,,Unlabeled Other
+Avorion,Glow,,,,,,,,,,Unlabeled Other
+Avorion,Glass,,,,,,,,,,Unlabeled Other
+Avorion,Reflector,,,,,,,,,,Unlabeled Other
+Avorion,Stone,,,,,,,,,,Unlabeled Other
+Avorion,Hologram,,,,,,,,,,Unlabeled Other
+Avorion,Rich Stone,,,,,,,,,,Unlabeled Other
+Avorion,Super Rich Stone,,,,,,,,,,Unlabeled Other
+Avorion,Ship Name,,,,,,,,,,Unlabeled Other
+Avorion,Ship Emblem,,,,,,,,,,Unlabeled Other
+Avorion,Hull (Alternate Pattern A),,,,,,,,,,Unlabeled Other
+Avorion,Hull (Vivid Colors),,,,,,,,,,Unlabeled Other
+Avorion,Hull (White Stripes A),,,,,,,,,,Unlabeled Other
