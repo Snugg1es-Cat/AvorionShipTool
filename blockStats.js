@@ -2,24 +2,23 @@
 
 // universal block type to hold stats
 class block {
-    constructor(material, name, cost$, costM, health, weight, procPower, reqEnergy, other, otherType, reqMechanic, reqEngineer) {
+    constructor(material, name, cost$, costM, health, weight, reqMechanic, reqEngineer, procPower, reqEnergy, other, otherType) {
         this.material = material;
         this.name = name;
         this.cost$ = Number(cost$);
         this.costM = Number(costM);
         this.health = Number(health);
         this.weight = Number(weight);
+        //required crew per block
+        this.reqCrewMechanic = Number(reqMechanic);
+        this.reqCrewEngineer = Number(reqEngineer);
         this.procPower = Number(procPower);
         this.reqEnergy = Number(reqEnergy);
         // other is used for unique block elements
         // eg power generators generated power
-        // or cargo holds storage capicity
+        // or cargo holds storage capacity
         this.other = Number(other);
         this.otherType = otherType;
-    
-        //required crew per block
-        this.reqCrewMechanic = Number(reqMechanic);
-        this.reqCrewEngineer = Number(reqEngineer);
     }
 }
 
