@@ -17,7 +17,6 @@ export default class shipCalculator {
         this.enginePP = 0;
 
         //input variables
-        this.genTypeBool = this.palette.CheckPowerSource();
         this.integrityFieldGeneratorCount = 0;
         //engine calc
         this.armorBlocks = 0;
@@ -42,10 +41,8 @@ export default class shipCalculator {
 
     //Triggers a full ship calculation
     runCalcAll(){
-        console.log(this.palette)
-        console.log(this.eGenCountShields)
         this.shieldCalcHandler();
-        console.log(this.eGenCountShields)
+        this.engineCalcHandler();
     }
 
     //change Building Knowledge and handle subsequent changes
@@ -83,19 +80,20 @@ export default class shipCalculator {
             if (this.palette.shieldGenerator.other == 0) {
                 // shields invalid set to zero
                 blockCountArray = [0,0]
-                console.log('shield gen bad')
+                console.log('No Avaliable Shield Generators')
+                console.log(this.palette.shieldGenerator)
             }
             else {
                 //shield generator as variable
                 let sGen = this.palette.shieldGenerator
                 let eGen;
 
-                if (this.genTypeBool) {eGen = this.palette.generator /*set generator variable*/}
+                if (this.palette.checkPowerSource()) {eGen = this.palette.generator /*set generator variable*/}
                 else {eGen = this.palette.solarPanel /*set generator variable*/}
                 //shield generator and power sources are valid
             
                 //logic
-                blockCountArray = calcBlockCount(this.shieldPP, eGen, sGen);
+                blockCountArray = this.calcBlockCount(this.shieldPP, eGen, sGen);
             }
             //output
             //block counts
@@ -104,7 +102,7 @@ export default class shipCalculator {
             
 
             //stats
-            this.shieldDurability = this.sGenCount * this.shieldDuribilityMult;
+            this.shieldDurability = this.palette.shieldGenerator.other * this.sGenCount * this.shieldDuribilityMult;
         }
     }
 
@@ -118,29 +116,33 @@ export default class shipCalculator {
         let ratio = eGen.other*this.generatedEnergyMult / block.reqEnergy;
         let genCount = ppLimit/(ratio+1);
         let blockCount = genCount*ratio;
-        console.log({genCount})
 
         return ([genCount , blockCount]);
     }
 
     //crew calculator
     //calculates how many crew members are needed
-    calcCrewNeeded(block, blockCount, engiBool) {
+    calcCrewNeeded(block, blockCount, engiBool="false") {
         let crewType = 'reqCrewMechanic';
         if (engiBool) { crewType = 'reqCrewEngineer'; }
         return block[crewType] * blockCount;
+    }
+    //calculate the crew Quarter blocks needed
+    calcCrewQuarters(reqCrew) {
+        return this.palette.crewQuarters.other * reqCrew;
     }
 
     engineCalcHandler(){
         //checking energy generator type
         // generator
         let eCalResults
-        if(this.genTypeBool) {
-            eCalResults = engineCalculator(this.enginePP, this.palette.engine, this.palette.generator, this.palette.crewQuarters, this.palette.shieldGenerator, this.sGenCount, this.palette.thruster, this.thrusterCount)
+        console.log(this.palette.checkPowerSource)
+        if(this.palette.checkPowerSource) {
+            eCalResults = this.engineCalculator(this.enginePP, this.palette.engine, this.palette.generator, this.palette.crewQuarters, this.palette.shieldGenerator, this.sGenCount, this.palette.thruster, this.thrusterCount)
         }
         //solar panels
         else {
-            eCalResults = engineCalculator();
+            eCalResults = this.engineCalculator();
         }
         this.eGenCountEngines = eCalResults[0];
         this.eCount = eCalResults[1];
@@ -148,12 +150,14 @@ export default class shipCalculator {
     };
 
     engineCalculator(ppLimit, engineBlock, energySource, crewQuartersBlock, shieldBlock, shieldCount, thrusterBlock, thrusterCount) {
+        
     // engineer polution
     // Crew Quarters to house the engineers responsible for shields and thrusters
     // add 0.01 because there is a small base engi requirement I believe to be 0.01
-    let polutedEngiQuartersBlocks = calcCrewQuarters(calcCrewNeeded(shieldBlock, shieldCount, true) + calcCrewNeeded(thrusterBlock, thrusterCount, true) + 0.01);
+    let polutedEngiQuartersBlocks = this.calcCrewQuarters(this.calcCrewNeeded(shieldBlock, shieldCount, true) + this.calcCrewNeeded(thrusterBlock, thrusterCount, true) + 0.01);
     // power generators to power engi crew quarters
     let polutedEngiEnergySourceBlocks = (polutedEngiQuartersBlocks*crewQuartersBlock.reqEnergy) / energySource.other;
+
 
 
     //new processing power limit which ignores the engineers required from shields
@@ -321,7 +325,7 @@ class palette {
         this.setType('solarPanel', material, BK, opti);
     }
 
-    CheckPowerSource(){
+    checkPowerSource(){
         //shield gen is valid checking power source
         if (this.generator.other > 0) {return true;}
         //generator failed attempting solarPanel as backup
