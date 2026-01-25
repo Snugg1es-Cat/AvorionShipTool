@@ -1,4 +1,4 @@
-//handles the calculation for ship stats
+//handles the calculation for ship statsengineerOverclock
 export default class shipCalculator {
     constructor (allBlocks, optimization, buildingKnowledge) {
         //palette
@@ -21,6 +21,7 @@ export default class shipCalculator {
         //engine calc
         this.armorBlocks = 0;
         this.thrusterCount = 0;
+        this.engineerOverclock = false;
 
         //init calculator output variables
         //shield calc
@@ -34,6 +35,7 @@ export default class shipCalculator {
         this.eGenCountEngines = 0;
         this.eCount = 0;
         this.cQCountEngines = 0;
+        this.maxSpeed = 0;
 
         //set initial BK
         this.changeBuildingKnowledge(buildingKnowledge);
@@ -122,10 +124,12 @@ export default class shipCalculator {
 
     //crew calculator
     //calculates how many crew members are needed
-    calcCrewNeeded(block, blockCount, engiBool="false") {
+    calcCrewNeeded(block, blockCount, engiBool="false", overclock="false") {
         let crewType = 'reqCrewMechanic';
+        let overclockMult = 1;
         if (engiBool) { crewType = 'reqCrewEngineer'; }
-        return block[crewType] * blockCount;
+        if (overclock) { overclockMult = 3; }
+        return (block[crewType] * blockCount) * overclockMult;
     }
     //calculate the crew Quarter blocks needed
     calcCrewQuarters(reqCrew) {
@@ -136,9 +140,8 @@ export default class shipCalculator {
         //checking energy generator type
         // generator
         let eCalResults
-        console.log(this.palette.checkPowerSource)
         if(this.palette.checkPowerSource) {
-            eCalResults = this.engineCalculator(this.enginePP, this.palette.engine, this.palette.generator, this.palette.crewQuarters, this.palette.shieldGenerator, this.sGenCount, this.palette.thruster, this.thrusterCount)
+            eCalResults = this.engineCalculator(this.enginePP, this.palette.engine, this.palette.generator, this.palette.crewQuarters, this.engineerOverclock, this.palette.shieldGenerator, this.sGenCount, this.palette.thruster, this.thrusterCount)
         }
         //solar panels
         else {
@@ -147,50 +150,57 @@ export default class shipCalculator {
         this.eGenCountEngines = eCalResults[0];
         this.eCount = eCalResults[1];
         this.cQCountEngines = eCalResults[2];
+
+        this.maxSpeed = this.calcMaxSpeed(this.eCount, this.engineerOverclock);
     };
 
-    engineCalculator(ppLimit, engineBlock, energySource, crewQuartersBlock, shieldBlock, shieldCount, thrusterBlock, thrusterCount) {
+    engineCalculator(ppLimit, engineBlock, energySource, crewQuartersBlock, engineerOverclock, shieldBlock, shieldCount, thrusterBlock, thrusterCount) {
+
+        // engineer polution
+        // Crew Quarters to house the engineers responsible for shields and thrusters
+        // add 0.01 because there is a small base engi requirement I believe to be 0.01
+        let polutedEngiQuartersBlocks = this.calcCrewQuarters(this.calcCrewNeeded(shieldBlock, shieldCount, true, engineerOverclock) + this.calcCrewNeeded(thrusterBlock, thrusterCount, true, engineerOverclock) + 0.01);
+        // power generators to power engi crew quarters
+        let polutedEngiEnergySourceBlocks = (polutedEngiQuartersBlocks*crewQuartersBlock.reqEnergy) / energySource.other;
+
+        //new processing power limit which ignores the engineers required from shields
+        let newPPLimt = ppLimit - (polutedEngiQuartersBlocks + polutedEngiEnergySourceBlocks);
+
+        // the ratio between engines and crew quarters
+        // (10/19) is crew quarter density which should be apart of block stats but isnt in this test 
+        //let ratioEtoCQ = (1/90) / (10/19)/*engineBlock.reqCrewEngineer / crewQuartersBlock.other*/
+        let ratioEtoCQ = this.calcCrewNeeded(engineBlock, 1, true, engineerOverclock) /crewQuartersBlock.other;
+
         
-    // engineer polution
-    // Crew Quarters to house the engineers responsible for shields and thrusters
-    // add 0.01 because there is a small base engi requirement I believe to be 0.01
-    let polutedEngiQuartersBlocks = this.calcCrewQuarters(this.calcCrewNeeded(shieldBlock, shieldCount, true) + this.calcCrewNeeded(thrusterBlock, thrusterCount, true) + 0.01);
-    // power generators to power engi crew quarters
-    let polutedEngiEnergySourceBlocks = (polutedEngiQuartersBlocks*crewQuartersBlock.reqEnergy) / energySource.other;
+        let percentageCQ = ratioEtoCQ / (1+ratioEtoCQ)
+        let percentageE = 1 / (1+ratioEtoCQ)
+        let ratioEGenToECQ = energySource.other / (percentageE*engineBlock.reqEnergy + percentageCQ*crewQuartersBlock.reqEnergy)
 
 
-
-    //new processing power limit which ignores the engineers required from shields
-    let newPPLimt = ppLimit - (polutedEngiQuartersBlocks + polutedEngiEnergySourceBlocks);
-
-    // the ratio between engines and crew quarters
-    // (10/19) is crew quarter density which should be apart of block stats but isnt in this test 
-    let ratioEtoCQ = (1/90) / (10/19)/*engineBlock.reqCrewEngineer / crewQuartersBlock.other*/
-
-    
-    let percentageCQ = ratioEtoCQ / (1+ratioEtoCQ)
-    let percentageE = 1 / (1+ratioEtoCQ)
-    let ratioEGenToECQ = energySource.other / (percentageE*engineBlock.reqEnergy + percentageCQ*crewQuartersBlock.reqEnergy)
-
-
-    //energy
-    // the ratio between energy generators to the engine to crew quarter ratio
-    // adjusts engine to crew quater ratio by their energy requirements
-    // let ratioEGenToECQ = energySource.other / (engineBlock.reqEnergy + ratioEtoCQ*crewQuartersBlock.reqEnergy)
-    
-    // expand ratios to fill PP limit
-    let eGenCount = newPPLimt/(ratioEGenToECQ+1);
-    let engineAndCrewQCount = eGenCount*ratioEGenToECQ;
+        //energy
+        // the ratio between energy generators to the engine to crew quarter ratio
+        // adjusts engine to crew quater ratio by their energy requirements
+        // let ratioEGenToECQ = energySource.other / (engineBlock.reqEnergy + ratioEtoCQ*crewQuartersBlock.reqEnergy)
         
-    let engineCount = engineAndCrewQCount * percentageE
-    let crewQuartersCount = engineAndCrewQCount * percentageCQ
+        // expand ratios to fill PP limit
+        let eGenCount = newPPLimt/(ratioEGenToECQ+1);
+        let engineAndCrewQCount = eGenCount*ratioEGenToECQ;
+            
+        let engineCount = engineAndCrewQCount * percentageE
+        let crewQuartersCount = engineAndCrewQCount * percentageCQ
 
-    //add shield gens / crew
-    eGenCount += polutedEngiEnergySourceBlocks;
-    crewQuartersCount += polutedEngiQuartersBlocks;
+        //add shield gens / crew
+        eGenCount += polutedEngiEnergySourceBlocks;
+        crewQuartersCount += polutedEngiQuartersBlocks;
 
-    return [eGenCount, engineCount, crewQuartersCount];
+        return [eGenCount, engineCount, crewQuartersCount];
     };
+
+    calcMaxSpeed(engineCount, overclock) {
+        let overclockMult = 1;
+        if (overclock) {overclockMult = 2;}
+        return (100 * Math.log(engineCount + 5) - 86) * overclockMult;
+    }
 };
 
 
