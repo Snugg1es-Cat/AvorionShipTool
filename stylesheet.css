@@ -5,9 +5,43 @@
     margin: 1rem;
 }
 
+#blockCalc > ul {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+#blockCalc > ul > li {
+    margin: 1rem;
+}
+
+ul {
+    list-style-type: none;
+}
+
+#blockCalc h2 {
+    text-align: center;
+}
+
 /*ship*/
 #shipCalc {
     background-color: rgb(255, 218, 254);
     border: dashed;
     margin: 1rem;
+}
+
+#shipCalc ul li ul {
+    display: flex;
+    flex-direction: row;
+}
+#shipCalc ul li ul li {
+    display: flex;
+    flex-direction: column;
+    border: dotted;
+
+}
+#shipCalc ul li ul li ul{
+    display: flex;
+    flex-direction: column;
+
 }

@@ -30,6 +30,7 @@ import shipCalculator from './shipCalculator.js';
         const PPLimitTextBox = document.getElementById('PPLimitTextBox');
         const armorTotalTextBox = document.getElementById('armorTotalTextBox');
         const thrusterTotalTextBox = document.getElementById('thrusterTotalTextBox');
+        const weightTextBox = document.getElementById('weightTextBox');
 
         //output spans
             //shields
@@ -103,7 +104,7 @@ import shipCalculator from './shipCalculator.js';
         engineerOverclockCheckBox.addEventListener("input", () => {autoSubmit(inputAllocationCheckBox, ["engineerOverclock", engineerOverclockCheckBox]);})
         armorTotalTextBox.addEventListener("input", () => {autoSubmit(inputAllocation, ["armorBlocks", armorTotalTextBox]);})
         thrusterTotalTextBox.addEventListener("input", () => {autoSubmit(inputAllocation, ["thrusterCount", thrusterTotalTextBox]);})
-
+        weightTextBox.addEventListener("input", () => {autoSubmit(inputAllocation, ["otherWeight", weightTextBox]);})
 
 //utility functions
 
@@ -315,15 +316,15 @@ import shipCalculator from './shipCalculator.js';
         spanShieldStrength.textContent = ship.shieldDurability;
         spanShieldCount.textContent = ship.sGenCount;
         spanShieldEGenCount.textContent = ship.eGenCountShields;
-        spanShieldTotalWeight.textContent = "work in progress";
+        spanShieldTotalWeight.textContent = ship.shieldsTotalWeight;
         
         //engines
         spanEngineMaxSpeed.textContent = ship.maxSpeed;
-        spanEngineAcceleration.textContent = "work in progress";
+        spanEngineAcceleration.textContent = ship.acceleration;
         spanEngineCount.textContent = ship.eCount;
         spanEngineEGenCount.textContent = ship.eGenCountEngines;
         spanEngineCrewQ.textContent = ship.cQCountEngines;
-        spanEngineTotalWeight.textContent = "work in progress";
+        spanEngineTotalWeight.textContent = ship.enginesTotalWeight;
     }
 
 //init code

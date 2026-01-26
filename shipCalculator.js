@@ -22,6 +22,7 @@ export default class shipCalculator {
         this.armorBlocks = 0;
         this.thrusterCount = 0;
         this.engineerOverclock = false;
+        this.otherWeight = 0;
 
         //init calculator output variables
         //shield calc
@@ -30,12 +31,15 @@ export default class shipCalculator {
         this.shieldDurability = 0;
         this.sReqCrewEngineer = 0;
         this.sReqCrewmechanic = 0;
+        this.shieldsTotalWeight = 0;
 
         //engines
         this.eGenCountEngines = 0;
         this.eCount = 0;
         this.cQCountEngines = 0;
         this.maxSpeed = 0;
+        this.acceleration = 0;
+        this.enginesTotalWeight = 0;
 
         //set initial BK
         this.changeBuildingKnowledge(buildingKnowledge);
@@ -151,7 +155,12 @@ export default class shipCalculator {
         this.eCount = eCalResults[1];
         this.cQCountEngines = eCalResults[2];
 
+        //max speed
         this.maxSpeed = this.calcMaxSpeed(this.eCount, this.engineerOverclock);
+
+        //acceleration
+        let weightDict = this.calcTotalWeight();
+        this.acceleration = this.eCount * this.palette.engine.other / weightDict.totalWeight;
     };
 
     engineCalculator(ppLimit, engineBlock, energySource, crewQuartersBlock, engineerOverclock, shieldBlock, shieldCount, thrusterBlock, thrusterCount) {
@@ -200,6 +209,46 @@ export default class shipCalculator {
         let overclockMult = 1;
         if (overclock) {overclockMult = 2;}
         return (100 * Math.log(engineCount + 5) - 86) * overclockMult;
+    };
+
+    calcTotalWeight () {
+        let energyGen = "solarPanel"
+        if (this.palette.checkPowerSource()) {energyGen = "generator"}
+        
+        let otherWeight = this.otherWeight;
+        let totalWeight = otherWeight;
+
+        //shields
+        let eGenWeightSheilds = this.eGenCountShields * this.palette[energyGen].weight;
+        totalWeight += eGenWeightSheilds;
+
+        let sGenWeight = this.sGenCount * this.palette.shieldGenerator.weight;
+        totalWeight += sGenWeight;
+
+        this.shieldsTotalWeight = eGenWeightSheilds + sGenWeight;
+        //engines
+        let thrusterWeight = this.thrusterCount * this.palette.thruster.weight;
+        totalWeight += thrusterWeight;
+
+        let eGenWeightEngines = this.eGenCountEngines * this.palette[energyGen].weight;
+        totalWeight += eGenWeightEngines;
+
+        let engineWeight = this.eCount * this.palette.engine.weight;
+        totalWeight += engineWeight;
+
+        let crewQWeight = this.cQCountEngines * this.palette.crewQuarters.weight;
+        totalWeight += crewQWeight;
+
+        this.enginesTotalWeight = thrusterWeight + eGenWeightEngines + engineWeight + crewQWeight;
+        return {
+            totalWeight: totalWeight, 
+            otherWeight: otherWeight, 
+            eGenWeightSheilds: eGenWeightSheilds, 
+            eGenWeightEngines: eGenWeightEngines, 
+            sGenWeight: sGenWeight, 
+            engineWeight: engineWeight, 
+            crewQWeight: crewQWeight
+        };
     }
 };
 

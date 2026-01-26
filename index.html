@@ -15,7 +15,7 @@
         <li>
           <!--Drop Down for materials-->
           <form action="materialForm" method="POST">
-            <label for="material">Material</label>
+            <label for="material">Material:</label>
             <select name="material" id="material">
               <option value="iron">Iron</option>
               <option value="titanium">Titanium</option>
@@ -29,7 +29,7 @@
         
           <!--Drop Down for blocks-->
           <form action="blockForm" method="POST">
-            <label for="block">Block</label>
+            <label for="block">Block:</label>
             <select name="block" id="block">
 
               <!--prepopulate all options for browser to remember initial state on reload-->
@@ -82,7 +82,7 @@
         
           <!--Drop Down for stats-->
           <form action="statForm" method="POST">
-            <label for="stat">Stats</label>
+            <label for="stat">Stat:</label>
             <select name="stat" id="stat">
               <option value="cost$">Cost($)</option>
               <option value="costM">Cost(M)</option>
@@ -147,62 +147,80 @@
       <!--Input Allocation Boxes-->
       <label for="PPLimitTextBox">PP Limit:</label>
       <input type="text" inputmode="numeric" step="1" id="PPLimitTextBox" value="128"></input>
-      <li>
-        <ul>
-          <!--Investment-->
-          <label for="shieldAllocationTextBox">Shields:</label>
-          <input type="text" inputmode="numeric" id="shieldAllocationTextBox" name="shield">
+      <ul>
+        <li>
+          <ul>
+            <li>
+              <ul>
+                <li>
+                  <label for="shieldAllocationTextBox">Shields:</label>
+                  <input type="text" inputmode="numeric" id="shieldAllocationTextBox" name="shield">
+                </li>
+                <li><p>Shield Count: <span id="outputShieldCount">Meow</span></p></li>
+                <li><p>Generator Count: <span id="outputShieldEGenCount">Meow</span></p></li>
+              </ul>
+            </li>
 
-          <!--Alternate Count Input-->
-          <!--could put output shield count here which could update automatically as an output 
-          or be used as an input similar to the blockCalc-->
-        </ul>
-        <ul>
-          <label for="engineAllocationTextBox">Engines:</label>
-          <input type="text" inputmode="numeric" id="engineAllocationTextBox" name="engine">
+            <li>
+              <ul>
+                <!--Shield-->
+                <li><p>Shield Strength: <span id="outputShieldStrength">Meow</span></p></li>
+                <li><p>Total Weight: <span id="outputShieldWeight">Meow</span></p></li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <ul>
+            <li>
+              <ul>
+                <li>
+                  <label for="engineAllocationTextBox">Engines:</label>
+                  <input type="text" inputmode="numeric" id="engineAllocationTextBox" name="engine">
 
-          <label for="engineerOverclockCheckBox">Engineer Overclock:</label>
-          <input type="checkbox" id="engineerOverclockCheckBox">
-        </ul>
+                  <label for="engineerOverclockCheckBox">Engineer Overclock:</label>
+                  <input type="checkbox" id="engineerOverclockCheckBox">
+                </li>
+                <li><p>Engine Count: <span id="outputEngineCount">Meow</span></p></li>
+                <li><p>Generator Count: <span id="outputEngineEGen">Meow</span></p></li>
+                <li>
+                  <li>  
+                    <label for="thrusterTotalTextBox">Thruster:</label>
+                    <input type="text" inputmode="numeric" id="thrusterTotalTextBox" name="thruster">
+                  </li>
+                </li>
+                <li>
+                  <li>  
+                    <label for="weightTextBox">Other Weight:</label>
+                    <input type="text" inputmode="numeric" id="weightTextBox" name="weight">
+                  </li>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <ul>
+                <!--Engines-->
+                <li><p>Max Speed: <span id="outputEngineSpeed">Meow</span></p></li>
+                <li><p>Acceleration: <span id="outputEngineAcceleration">Meow</span></p></li>
+                <li><p>Crew Quarters Count: <span id="outputEngineCrewQ">Meow</span></p></li>
+                <li><p>Total Weight: <span id="outputEngineWeight">Meow</span></p></li>
+              </ul>
+            </li>
+          </ul>
+        </li>
         <!--Other-->
-        <ul>
+        <li>
           <label for="armorTotalTextBox">Armor:</label>
           <input type="text" inputmode="numeric" id="armorTotalTextBox" name="armor">
 
           <label for="mechanicOverclockCheckBox">Mechanic Overclock:</label>
           <input type="checkbox" id="mechanicOverclockCheckBox">
-        </ul>
-        <ul>  
-          <label for="thrusterTotalTextBox">Thruster:</label>
-          <input type="text" inputmode="numeric" id="thrusterTotalTextBox" name="thruster">
-        </ul>
-        <ul>  
-          <label for="weightTextBox">Extra Weight:</label>
-          <input type="text" inputmode="numeric" id="weightTextBox" name="weight">
-        </ul>
-        <ul>  
+        </li>
+        <li>  
           <label for="crewTextBox">Extra Crew:</label>
           <input type="text" inputmode="numeric" id="crewTextBox" name="thruster">
-        </ul>
-      </li>
-      
-
-      <!--output stats-->
-      <li>
-        <!--Shield-->
-        <ul><p>Shield Strength: <span id="outputShieldStrength">Meow</span></p></ul>
-        <ul><p>Shield Count: <span id="outputShieldCount">Meow</span></p></ul>
-        <ul><p>Generator Count: <span id="outputShieldEGenCount">Meow</span></p></ul>
-        <ul><p>Total Weight: <span id="outputShieldWeight">Meow</span></p></ul>
-
-        <!--Engines-->
-        <ul><p>Max Speed: <span id="outputEngineSpeed">Meow</span></p></ul>
-        <ul><p>Acceleration: <span id="outputEngineAcceleration">Meow</span></p></ul>
-        <ul><p>Engine Count: <span id="outputEngineCount">Meow</span></p></ul>
-        <ul><p>Generator Count: <span id="outputEngineEGen">Meow</span></p></ul>
-        <ul><p>Crew Quarters Count: <span id="outputEngineCrewQ">Meow</span></p></ul>
-        <ul><p>Total Weight: <span id="outputEngineWeight">Meow</span></p></ul>
-      </li>
+        </li>
+      </ul>
     </div>
   </main>
 
