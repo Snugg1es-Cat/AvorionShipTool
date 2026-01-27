@@ -97,7 +97,7 @@
           <!--other stat should be renamed or hidden epending on block type-->
           <p id="statPreview">(value of the stat)</p>
         </li>
-        <li><p>x</p></li>
+        <li>x</li>
         <li>
           <!--Text box for numbers-->
           <label for="quantityTextBox">Quantity:</label>
@@ -110,7 +110,7 @@
               This sacrifices the Spinner Buttons and being able to handle scientific notation (not needed)
             -->
         </li>
-        <li><p>=</p></li>
+        <li>=</li>
         <li>
           <!--Text box for numbers-->
           <label for="totalTextBox">Total:</label>
@@ -119,107 +119,147 @@
       </ul>
     </div>
     <div id="shipCalc">
-      <!--Ship Name-->
-      <input id="shipName" placeholder="Ship Name"></input>
+      <div id="shipSettings">
+        <!--Ship Name-->
+        <input id="shipName" placeholder="Ship Name"></input>
 
-      <!--Building Knowledge Drop Down-->
-      <label for="buildingKnowledgeDropBox">Building Knowledge</label>
-      <select id="buildingKnowledgeDropBox">
-        <option value="iron">Iron</option>
-        <option value="titanium">Titanium</option>
-        <option value="naonite">Naonite</option>
-        <option value="trinium">Trinium</option>
-        <option value="xanion">Xanion</option>
-        <option value="ogonite">Ogonite</option>
-        <option value="avorion">Avorion</option>
-      </select>
+        <div> <!--Building Knowledge Drop Down-->
+          <label for="buildingKnowledgeDropBox">Building Knowledge</label>
+          <select id="buildingKnowledgeDropBox">
+            <option value="iron">Iron</option>
+            <option value="titanium">Titanium</option>
+            <option value="naonite">Naonite</option>
+            <option value="trinium">Trinium</option>
+            <option value="xanion">Xanion</option>
+            <option value="ogonite">Ogonite</option>
+            <option value="avorion">Avorion</option>
+          </select>
+        </div>
 
-      <!--Block Palette-->
-      <label for="blockPaletteDropBox">Block Palette</label>
-      <select id="blockPaletteDropBox">
-        <option value="processingPower">Processing Power</option>
-        <option value="weight">Weight</option>
+        <div> <!--Block Palette-->
+          <label for="blockPaletteDropBox">Block Palette</label>
+          <select id="blockPaletteDropBox">
+            <option value="processingPower">Processing Power</option>
+            <option value="weight">Weight</option>
+            <!--Custom could open a larger detailed selection menu-->
+            <option value="custom">Custom</option>
+          </select>
+        </div>
 
-        <!--Custom could open a larger detailed selection menu-->
-        <option value="custom">Custom</option>
-      </select>
+        <div> <!--PP Limit-->
+          <label for="PPLimitTextBox">PP Limit:</label>
+          <input type="text" inputmode="numeric" step="1" id="PPLimitTextBox" value="128"></input>
+        </div>
+      </div>
 
-      <!--Input Allocation Boxes-->
-      <label for="PPLimitTextBox">PP Limit:</label>
-      <input type="text" inputmode="numeric" step="1" id="PPLimitTextBox" value="128"></input>
-      <ul>
-        <li>
-          <ul>
-            <li>
-              <ul>
-                <li>
-                  <label for="shieldAllocationTextBox">Shields:</label>
-                  <input type="text" inputmode="numeric" id="shieldAllocationTextBox" name="shield">
-                </li>
-                <li><p>Shield Count: <span id="outputShieldCount">Meow</span></p></li>
-                <li><p>Generator Count: <span id="outputShieldEGenCount">Meow</span></p></li>
-              </ul>
-            </li>
+      <table id="subsystemTable"> <!--SubSystems-->
+        <thead>
+          <tr>
+            <th colspan="2" class="popup"><button>New</button><span class="popuptext">Add New Subsystem</span></th>
+            <th>Name</th>
+            <th>Stat Type</th>
+            <th>Stat Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!--example subsystem will get controller to make/delete these-->
+          <tr>
+            <td class="popup"><button>+</button><span class="popuptext">Duplicate Subsystem</span></td>
+            <td class="popup"><button>─</button><span class="popuptext">Remove Subsystem</span></td>
+            <td>
+              <input type="text" inputmode="text" id="subsystemName1" placeholder="Subsystem Name 1"></input></td>
+            <td>
+              <select>
+                <option value="rechargeRate">Recharge Rate</option>
+                <option value="generatedEnergy%">Generated Energy (%)</option>
+                <option value="requiredEnergy+">Required Energy (+)</option>
+                <option value="requiredEnergy%">Required Energy (%)</option>
+                <!--etc-->
+              </select>
+            </td>
+            <td>
+              <input type="text" inputmode="numeric" id="subsystemValue1" placeholder="0"></input>
+            </td>
+          </tr>
+        </tbody>
+      </table>
 
-            <li>
-              <ul>
-                <!--Shield-->
-                <li><p>Shield Strength: <span id="outputShieldStrength">Meow</span></p></li>
-                <li><p>Total Weight: <span id="outputShieldWeight">Meow</span></p></li>
-              </ul>
-            </li>
-          </ul>
+      <ul id="systemList"> <!--List of ship systems-->
+
+        <li class="system"> <!--Shields-->
+          <div class="input">
+            <ul>
+              <li>
+                <label for="shieldAllocationTextBox">Shields:</label>
+                <input type="text" inputmode="numeric" id="shieldAllocationTextBox" name="shield">
+              </li>
+              <li>Shield Count: <span id="outputShieldCount">Meow</span></li>
+              <li>Generator Count: <span id="outputShieldEGenCount">Meow</span></li>
+            </ul>
+          </div>
+
+          <div class="output">
+            <ul>
+              <li>Shield Strength: <span id="outputShieldStrength">Meow</span></li>
+              <li>Total Weight: <span id="outputShieldWeight">Meow</span></li>
+            </ul>
+          </div>
         </li>
-        <li>
-          <ul>
-            <li>
-              <ul>
-                <li>
-                  <label for="engineAllocationTextBox">Engines:</label>
-                  <input type="text" inputmode="numeric" id="engineAllocationTextBox" name="engine">
 
-                  <label for="engineerOverclockCheckBox">Engineer Overclock:</label>
-                  <input type="checkbox" id="engineerOverclockCheckBox">
-                </li>
-                <li><p>Engine Count: <span id="outputEngineCount">Meow</span></p></li>
-                <li><p>Generator Count: <span id="outputEngineEGen">Meow</span></p></li>
-                <li>
-                  <li>  
-                    <label for="thrusterTotalTextBox">Thruster:</label>
-                    <input type="text" inputmode="numeric" id="thrusterTotalTextBox" name="thruster">
-                  </li>
-                </li>
-                <li>
-                  <li>  
-                    <label for="weightTextBox">Other Weight:</label>
-                    <input type="text" inputmode="numeric" id="weightTextBox" name="weight">
-                  </li>
-                </li>
-              </ul>
-            </li>
-            <li>
-              <ul>
-                <!--Engines-->
-                <li><p>Max Speed: <span id="outputEngineSpeed">Meow</span></p></li>
-                <li><p>Acceleration: <span id="outputEngineAcceleration">Meow</span></p></li>
-                <li><p>Crew Quarters Count: <span id="outputEngineCrewQ">Meow</span></p></li>
-                <li><p>Total Weight: <span id="outputEngineWeight">Meow</span></p></li>
-              </ul>
-            </li>
-          </ul>
-        </li>
-        <!--Other-->
-        <li>
-          <label for="armorTotalTextBox">Armor:</label>
-          <input type="text" inputmode="numeric" id="armorTotalTextBox" name="armor">
+        <li class="system"> <!--Engines-->
+          <div class="input">
+            <ul>
+              <li>
+                <label for="engineAllocationTextBox">Engines:</label>
+                <input type="text" inputmode="numeric" id="engineAllocationTextBox" name="engine">
+              </li>
+              <li>
+                <label for="engineerOverclockCheckBox">Engineer Overclock:</label>
+                <input type="checkbox" id="engineerOverclockCheckBox">
+              </li>
+              <li>Engine Count: <span id="outputEngineCount">Meow</span></li>
+              <li>Generator Count: <span id="outputEngineEGen">Meow</span></li>
+              <li>
+                <label for="thrusterTotalTextBox">Thruster:</label>
+                <input type="text" inputmode="numeric" id="thrusterTotalTextBox" name="thruster">
+              </li>
+              <li>
+                <label for="weightTextBox">Other Weight:</label>
+                <input type="text" inputmode="numeric" id="weightTextBox" name="weight">
+              </li>
+            </ul>
+          </div>
 
-          <label for="mechanicOverclockCheckBox">Mechanic Overclock:</label>
-          <input type="checkbox" id="mechanicOverclockCheckBox">
+          <div class="output">
+            <ul>
+              <li>Max Speed: <span id="outputEngineSpeed">Meow</span></li>
+              <li>Acceleration: <span id="outputEngineAcceleration">Meow</span></li>
+              <li>Crew Quarters Count: <span id="outputEngineCrewQ">Meow</span></li>
+              <li>Total Weight: <span id="outputEngineWeight">Meow</span></li>
+            </ul>
+          </div>
+
         </li>
-        <li>  
-          <label for="crewTextBox">Extra Crew:</label>
-          <input type="text" inputmode="numeric" id="crewTextBox" name="thruster">
+
+        <li class="system"> <!--Other-->
+          <div class="input">
+            <ul>
+              <li>
+                <label for="armorTotalTextBox">Armor:</label>
+                <input type="text" inputmode="numeric" id="armorTotalTextBox" name="armor">
+              </li>
+              <li>
+                <label for="mechanicOverclockCheckBox">Mechanic Overclock:</label>
+                <input type="checkbox" id="mechanicOverclockCheckBox">
+              </li>
+              <li>
+                <label for="crewTextBox">Extra Crew:</label>
+                <input type="text" inputmode="numeric" id="crewTextBox" name="thruster">
+              </li>
+            </ul>
+          </div>
         </li>
+        
       </ul>
     </div>
   </main>
