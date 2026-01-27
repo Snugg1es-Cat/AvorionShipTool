@@ -1,47 +1,102 @@
+/*Universal*/
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
 /*Block Calculator*/
 #blockCalc {
     background-color: rgb(200, 255, 255);
     border: dashed;
-    margin: 1rem;
+}
+h2 {
+    margin: 0;
 }
 
 #blockCalc > ul {
     display: flex;
     flex-direction: row;
     justify-content: center;
+    margin: 0;
 }
 
 #blockCalc > ul > li {
-    margin: 1rem;
-}
-
-ul {
-    list-style-type: none;
+    margin-right: 1rem;
 }
 
 #blockCalc h2 {
     text-align: center;
 }
 
-/*ship*/
+/*Ship Calculator*/
 #shipCalc {
     background-color: rgb(255, 218, 254);
     border: dashed;
     margin: 1rem;
 }
 
-#shipCalc ul li ul {
+#shipSettings {
     display: flex;
-    flex-direction: row;
+    justify-content: center;
 }
-#shipCalc ul li ul li {
-    display: flex;
-    flex-direction: column;
+
+#subsystemTable {
+    margin: auto;
+}
+
+#systemList {
+    padding-left: 0;
+}
+
+.system {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     border: dotted;
+}
+
+.input {
+    border: solid;
+}
+
+.output {
+    grid-column: 2;
+    border: dashed;
+}
+
+#shipCalc {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    padding: 1%;
+}
+
+
+/*pop up message boxes*/
+.popup {
+    position: relative;
+}
+.popuptext {
+    visibility: hidden;
+    position: absolute;
+    z-index: 1;
+    top: 125%;
+    left: -10%;
+    margin-left: -50%;
+    background-color: lightcyan;
+    border: dotted;
+    padding: 10%;
+
+    opacity: 0;
+    /* Add transition for smooth animation of opacity and visibility */
+    transition: opacity 0.4s ease-in, visibility 0.4s ease-in; 
+}
+.popup button:hover + .popuptext{
+    transition-delay: 0.75s;
+    visibility: visible;
+
+    opacity: 1;
 
 }
-#shipCalc ul li ul li ul{
-    display: flex;
-    flex-direction: column;
-
+.popup:hover {
+    cursor: default;
 }
