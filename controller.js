@@ -22,6 +22,11 @@ import shipCalculator from './shipCalculator.js';
         const buildingKnowledgeDropBox = document.getElementById('buildingKnowledgeDropBox');
         const blockPaletteDropBox = document.getElementById('blockPaletteDropBox');
 
+        //Subsystem table
+        const subsystemTable = document.getElementById("subsystemTable");
+        const addNewSubsystemBtn =  document.getElementById("addNewSubsystemBtn");
+        let subsystemArray = [];
+
         //Input Allocation Text Boxes
         const shieldAllocationTextBox = document.getElementById('shieldAllocationTextBox');
         const engineAllocationTextBox = document.getElementById('engineAllocationTextBox');
@@ -96,6 +101,16 @@ import shipCalculator from './shipCalculator.js';
         blockPaletteDropBox.addEventListener("input", () => {updatePalette();})
         //PP Limit
         PPLimitTextBox.addEventListener("input", () => {autoSubmit(updatePPLimit);})
+
+        //subsystems
+        addNewSubsystemBtn.addEventListener("click", () => {addNewSubsystem();})
+
+
+        //addNewSubsystemEventListener();
+        function addNewSubsystemEventListener(index) {
+            //connect for both duplicate and delete buttons 
+            //pulling from array of all subsystems
+        }
 
         //Input Allocation Variables
         shieldAllocationTextBox.addEventListener("input", () => {autoSubmit(inputAllocation, ["shieldPP", shieldAllocationTextBox]);})
@@ -180,6 +195,8 @@ import shipCalculator from './shipCalculator.js';
             //Ship Calc
                 const validBK = validMaterials; //idential to valid materials
                 const validPalette = ["processingPower", "weight", "custom"];
+            //Subsystem effects
+                const validEffects = ["rechargeRate", "generatedEnergy%", "requiredEnergy+", "requiredEnergy%"];
 
     function validateDropDown(validInputs, dropBoxValue) {
         //Validates if the value is part of the array otherwise replaces it with an empty value
@@ -192,6 +209,10 @@ import shipCalculator from './shipCalculator.js';
         let bool = false;
         if (checkBox.checked) {bool = true}
         return bool;
+    }
+
+    function validateString(string) {
+        return string.toString().replace(/[\\${}"'<>]/g, '');
     }
 
 
@@ -295,6 +316,66 @@ import shipCalculator from './shipCalculator.js';
         ship.changePPLimit(newValue);
     }
 
+    //subsystem table
+    function addNewSubsystem(nameValue="", effectType="", effectValue="") {
+        //validate inputs
+        const validNameVal = validateString(nameValue);
+        const validEffectType = validateDropDown(validEffects, effectType)
+        const validEffectValue = validateAsNumericInput(effectValue)
+
+        //if output value should be a placeholder or value
+        let effectValuePHOrVal = `value='${validEffectValue}'`;
+        if (effectValue == 0) {effectValuePHOrVal = "placeholder='0'";}
+
+        //total subsystems
+        //this may not work as an earlier item being deleted will ruin it
+        const subsystemUniqueNum = subsystemTable.rows.length;
+        //name
+        let outputName = "subsystemName${subsystemUniqueNum}"
+        if (validNameVal == "") {outputName = `placeholder="Subsystem Name ${subsystemUniqueNum}"`}
+        else {outputName = `value='${validNameVal}'`}
+        //create new subsystem
+        const newSubsystem = `
+        <!--Subsystem${subsystemUniqueNum}-->
+          <tr id="subsystem${subsystemUniqueNum}">
+            <!--Add/Delete Buttons-->
+            <td class="popup"><button value="${subsystemUniqueNum}">+</button><span class="popuptext">Duplicate Subsystem</span></td>
+            <td class="popup"><button value="${subsystemUniqueNum}">─</button><span class="popuptext">Remove Subsystem</span></td>
+            <!--Name-->
+            <td><input type="text" inputmode="text" id="subsystemName${subsystemUniqueNum}" ${outputName}></input></td>
+            <!--List of effects-->
+            <td>
+              <ul>
+                <li>
+                  <label id="subsystem${subsystemUniqueNum}DropBox" for="subsystem${subsystemUniqueNum}">
+                    <select>
+                        <option value="rechargeRate" ${validEffectType === "rechargeRate" ? "selected" : ""}>Recharge Rate</option>
+                        <option value="generatedEnergy%" ${validEffectType === "generatedEnergy%" ? "selected" : ""}>Generated Energy (%)</option>
+                        <option value="requiredEnergy+" ${validEffectType === "requiredEnergy+" ? "selected" : ""}>Required Energy (+)</option>
+                        <option value="requiredEnergy%" ${validEffectType === "requiredEnergy%" ? "selected" : ""}>Required Energy (%)</option>
+                        <!--etc-->
+                    </select>
+                  </label>
+                  <input type="text" inputmode="numeric" id="subsystem${subsystemUniqueNum}" ${effectValuePHOrVal}></input>
+                </li>
+              </ul>
+            </td>
+          </tr>
+        `
+
+        //add to table
+        subsystemTable.insertAdjacentHTML("beforeend", newSubsystem);
+
+        //handle button event listeners
+        subsystemArray.push(document.getElementById(`subsystem${subsystemUniqueNum}`));
+        addNewSubsystemEventListener(subsystemArray.length-1);
+    }
+
+    function removeSubsystem(rowToRemove) {
+
+        //handle button event listeners
+    }
+
     //handles input data to ship from textboxes and running the ship calc
     function inputAllocation(varToChange, input) {
         let newValue = validateAsNumericInput(input.value);
@@ -311,7 +392,6 @@ import shipCalculator from './shipCalculator.js';
     }
     //update output all
     function updateAllOutputStats() {
-        console.log(ship)
         //shields
         spanShieldStrength.textContent = ship.shieldDurability;
         spanShieldCount.textContent = ship.sGenCount;
