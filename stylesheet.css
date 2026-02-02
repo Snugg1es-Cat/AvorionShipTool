@@ -75,7 +75,7 @@ h2 {
 .popup {
     position: relative;
 }
-.popuptext {
+.popupText {
     visibility: hidden;
     position: absolute;
     z-index: 1;
@@ -90,7 +90,7 @@ h2 {
     /* Add transition for smooth animation of opacity and visibility */
     transition: opacity 0.4s ease-in, visibility 0.4s ease-in; 
 }
-.popup button:hover + .popuptext{
+.popup button:hover + .popupText{
     transition-delay: 0.75s;
     visibility: visible;
 
