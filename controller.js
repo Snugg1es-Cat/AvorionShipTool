@@ -1,3 +1,4 @@
+//import { createElement } from 'react';
 import allBlocks from './blockStats.js';
 import shipCalculator from './shipCalculator.js';
 
@@ -23,9 +24,8 @@ import shipCalculator from './shipCalculator.js';
         const blockPaletteDropBox = document.getElementById('blockPaletteDropBox');
 
         //Subsystem table
-        const subsystemTable = document.getElementById("subsystemTable");
+        const subsystemTableBody = document.querySelector("#subsystemTable tbody");
         const addNewSubsystemBtn =  document.getElementById("addNewSubsystemBtn");
-        let subsystemArray = [];
 
         //Input Allocation Text Boxes
         const shieldAllocationTextBox = document.getElementById('shieldAllocationTextBox');
@@ -317,58 +317,181 @@ import shipCalculator from './shipCalculator.js';
     }
 
     //subsystem table
-    function addNewSubsystem(nameValue="", effectType="", effectValue="") {
-        //validate inputs
+    function addNewSubsystem(nameValue="", effectList=[["rechargeRate",'0']]) {
+
+        //method 2 - create DOM elements
+
+        //Create a new row for the new subsystem
+        let newSubsystem = document.createElement("tr");
+
+        //create each of the 4 cells
+        let cellDupe = document.createElement("td");
+        let cellDelete = document.createElement("td");
+        let cellName = document.createElement("td");
+        let cellEffects = document.createElement("td");
+
+        //join cells to row
+        newSubsystem.appendChild(cellDupe);
+        newSubsystem.appendChild(cellDelete);
+        newSubsystem.appendChild(cellName);
+        newSubsystem.appendChild(cellEffects);
+
+        const subsystemUniqueNum = "0"; //todo the unique id stuff (this comment is repeated)
+
+        //append subsyetem to the table
+        subsystemTableBody.appendChild(newSubsystem);
+
+        //add elements to each cell
+        //Dupe button
+        let dupeBtn = document.createElement("button");
+        dupeBtn.textContent = "+";
+        //popup
+        let popupSpanDupe = document.createElement("span");
+        popupSpanDupe.classList.add("popupText");
+        popupSpanDupe.textContent = "Duplicate Subsystem";
+        cellDupe.classList.add("popup");
+
+        cellDupe.appendChild(dupeBtn);
+        cellDupe.appendChild(popupSpanDupe);
+        
+        //Delete button
+        let deleteBtn = document.createElement("button");
+        deleteBtn.textContent = "─";
+        //popup
+        let popupSpanDel = document.createElement("span");
+        popupSpanDel.classList.add("popupText");
+        popupSpanDel.textContent = "Remove Subsystem";
+        cellDelete.classList.add("popup");
+
+        cellDelete.appendChild(deleteBtn)
+        cellDelete.appendChild(popupSpanDel);
+
+        //Subsystem name textbox
         const validNameVal = validateString(nameValue);
-        const validEffectType = validateDropDown(validEffects, effectType)
-        const validEffectValue = validateAsNumericInput(effectValue)
 
-        //if output value should be a placeholder or value
-        let effectValuePHOrVal = `value='${validEffectValue}'`;
-        if (effectValue == 0) {effectValuePHOrVal = "placeholder='0'";}
+        let nameTBox = document.createElement("input");
+        nameTBox.id = ''; //todo the unique id stuff (this comment is repeated)
+        nameTBox.type = "text";
+        nameTBox.inputMode = "text";
+        if (validNameVal == "") {nameTBox.placeholder = `Subsystem Name ${subsystemUniqueNum}`}
+        else {nameTBox.value = validNameVal}
 
-        //total subsystems
-        //this may not work as an earlier item being deleted will ruin it
-        const subsystemUniqueNum = subsystemTable.rows.length;
-        //name
-        let outputName = "subsystemName${subsystemUniqueNum}"
-        if (validNameVal == "") {outputName = `placeholder="Subsystem Name ${subsystemUniqueNum}"`}
-        else {outputName = `value='${validNameVal}'`}
-        //create new subsystem
-        const newSubsystem = `
-        <!--Subsystem${subsystemUniqueNum}-->
-          <tr id="subsystem${subsystemUniqueNum}">
-            <!--Add/Delete Buttons-->
-            <td class="popup"><button value="${subsystemUniqueNum}">+</button><span class="popuptext">Duplicate Subsystem</span></td>
-            <td class="popup"><button value="${subsystemUniqueNum}">─</button><span class="popuptext">Remove Subsystem</span></td>
-            <!--Name-->
-            <td><input type="text" inputmode="text" id="subsystemName${subsystemUniqueNum}" ${outputName}></input></td>
-            <!--List of effects-->
-            <td>
-              <ul>
-                <li>
-                  <label id="subsystem${subsystemUniqueNum}DropBox" for="subsystem${subsystemUniqueNum}">
-                    <select>
-                        <option value="rechargeRate" ${validEffectType === "rechargeRate" ? "selected" : ""}>Recharge Rate</option>
-                        <option value="generatedEnergy%" ${validEffectType === "generatedEnergy%" ? "selected" : ""}>Generated Energy (%)</option>
-                        <option value="requiredEnergy+" ${validEffectType === "requiredEnergy+" ? "selected" : ""}>Required Energy (+)</option>
-                        <option value="requiredEnergy%" ${validEffectType === "requiredEnergy%" ? "selected" : ""}>Required Energy (%)</option>
-                        <!--etc-->
-                    </select>
-                  </label>
-                  <input type="text" inputmode="numeric" id="subsystem${subsystemUniqueNum}" ${effectValuePHOrVal}></input>
-                </li>
-              </ul>
-            </td>
-          </tr>
-        `
+        cellName.appendChild(nameTBox);
 
-        //add to table
-        subsystemTable.insertAdjacentHTML("beforeend", newSubsystem);
+        //Subsystem effects
+        let effectUL = document.createElement("ul")
 
-        //handle button event listeners
-        subsystemArray.push(document.getElementById(`subsystem${subsystemUniqueNum}`));
-        addNewSubsystemEventListener(subsystemArray.length-1);
+        cellEffects.appendChild(effectUL)
+
+        effectList.forEach(effect => {
+            //validate DropBox input
+            let validEffectType = validateDropDown(validEffects, effect[0]);
+            if (!validEffectType == '') {validEffectType = "rechargeRate"} 
+
+            let newEffectLi = document.createElement("li");
+
+            //drop box
+            let newDropBox = document.createElement("select");
+
+            let newEffectOption1 = document.createElement("option");
+            newEffectOption1.value = "rechargeRate";
+            newEffectOption1.textContent = "Recharge Rate";
+            
+            let newEffectOption2 = document.createElement("option");
+            newEffectOption2.value = "generatedEnergy%";
+            newEffectOption2.textContent = "Generated Energy (%)";
+            
+            let newEffectOption3 = document.createElement("option");
+            newEffectOption3.value = "requiredEnergy+";
+            newEffectOption3.textContent = "Required Energy (+)";
+            
+            let newEffectOption4 = document.createElement("option");
+            newEffectOption4.value = "requiredEnergy%";
+            newEffectOption4.textContent = "Required Energy (%)";
+
+            //text box
+            //validate value
+            let validEffectValue = validateAsNumericInput(effect[1]);
+
+            let textBox = document.createElement('input');
+            textBox.type = "";
+            textBox.inputMode = "numeric";
+            textBox.id = `subsystem${/*which number element is this*/''}`; //todo the unique id stuff (this comment is repeated)
+            if (validEffectValue == '0') {textBox.placeholder = '0';}
+            else {textBox.value = validEffectValue;}
+
+            //arrange and append
+            //label glues he drop box to the text box
+            let newLabel = document.createElement("label");
+            newLabel.for = `subsystem${/*which number element is this*/''}`; //todo the unique id stuff (this comment is repeated)
+
+            //add label to listing
+            newEffectLi.appendChild(newLabel);
+
+            //add dropbox to label
+            newLabel.appendChild(newDropBox);
+            //add drop box options to drop box
+            newDropBox.appendChild(newEffectOption1);
+            newDropBox.appendChild(newEffectOption2);
+            newDropBox.appendChild(newEffectOption3);
+            newDropBox.appendChild(newEffectOption4);
+
+            //add textboxt into listing
+            newEffectLi.appendChild(textBox)
+        
+            //output (add the new effect listing to unordered list)
+            effectUL.appendChild(newEffectLi);
+        });
+
+
+
+        // //method 1 - insert straight html
+        // //if output value should be a placeholder or value
+        // let effectValuePHOrVal = `value='${validEffectValue}'`;
+        // if (effectValue == 0) {effectValuePHOrVal = "placeholder='0'";}
+
+        // //total subsystems
+        // //this may not work as an earlier item being deleted will ruin it
+        // const subsystemUniqueNum = subsystemTable.rows.length;
+        // //name
+        // let outputName = "subsystemName${subsystemUniqueNum}"
+        // if (validNameVal == "") {outputName = `placeholder="Subsystem Name ${subsystemUniqueNum}"`}
+        // else {outputName = `value='${validNameVal}'`}
+        // //create new subsystem
+        // const newSubsystem = `
+        // <!--Subsystem${subsystemUniqueNum}-->
+        //   <tr id="subsystem${subsystemUniqueNum}">
+        //     <!--Add/Delete Buttons-->
+        //     <td class="popup"><button class="dupeBtn" value="${subsystemUniqueNum}">+</button><span class="popupText">Duplicate Subsystem</span></td>
+        //     <td class="popup"><button class="deleteBtn" value="${subsystemUniqueNum}">─</button><span class="popupText">Remove Subsystem</span></td>
+        //     <!--Name-->
+        //     <td><input type="text" inputmode="text" id="subsystemName${subsystemUniqueNum}" ${outputName}></input></td>
+        //     <!--List of effects-->
+        //     <td>
+        //       <ul>
+        //         <li>
+        //           <label id="subsystem${subsystemUniqueNum}DropBox" for="subsystem${subsystemUniqueNum}">
+        //             <select>
+        //                 <option value="rechargeRate" ${validEffectType === "rechargeRate" ? "selected" : ""}>Recharge Rate</option>
+        //                 <option value="generatedEnergy%" ${validEffectType === "generatedEnergy%" ? "selected" : ""}>Generated Energy (%)</option>
+        //                 <option value="requiredEnergy+" ${validEffectType === "requiredEnergy+" ? "selected" : ""}>Required Energy (+)</option>
+        //                 <option value="requiredEnergy%" ${validEffectType === "requiredEnergy%" ? "selected" : ""}>Required Energy (%)</option>
+        //                 <!--etc-->
+        //             </select>
+        //           </label>
+        //           <input type="text" inputmode="numeric" id="subsystem${subsystemUniqueNum}" ${effectValuePHOrVal}></input>
+        //         </li>
+        //       </ul>
+        //     </td>
+        //   </tr>
+        // `
+
+        // //add to table
+        // subsystemTable.insertAdjacentHTML("beforeend", newSubsystem);
+
+        // //handle button event listeners
+        // subsystemArray.push(document.getElementById(`subsystem${subsystemUniqueNum}`));
+        // addNewSubsystemEventListener(subsystemArray.length-1);
     }
 
     function removeSubsystem(rowToRemove) {
