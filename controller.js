@@ -19,9 +19,12 @@ import shipCalculator from './shipCalculator.js';
     //Main Ship Calculator
         //Ship Name
         const shipNameTextBox = document.getElementById('shipName');
-        //Drop DOwn Boxes
+        //Drop Down Boxes
         const buildingKnowledgeDropBox = document.getElementById('buildingKnowledgeDropBox');
         const blockPaletteDropBox = document.getElementById('blockPaletteDropBox');
+
+        //Subsystem List
+        const subsystemList = [];
 
         //Subsystem table
         const subsystemTableBody = document.querySelector("#subsystemTable tbody");
@@ -317,7 +320,7 @@ import shipCalculator from './shipCalculator.js';
     }
 
     //subsystem table
-    function addNewSubsystem(nameValue="", effectList=[["rechargeRate",'0']]) {
+    function addNewSubsystem(nameValue="", effectList=[["rechargeRate",'0'],["rechargeRate",'45'],["requiredEnergy+",'0']]) {
 
         //method 2 - create DOM elements
 
@@ -365,6 +368,15 @@ import shipCalculator from './shipCalculator.js';
 
         cellDelete.appendChild(deleteBtn)
         cellDelete.appendChild(popupSpanDel);
+        //add event listenter for deleting subsystem
+        deleteBtn.addEventListener("click", () => {
+            //remove from DOM
+            newSubsystem.remove();
+            //remove from JS
+            subsystemList
+            //save to local storage
+            saveAllSubsystems();
+        })
 
         //Subsystem name textbox
         const validNameVal = validateString(nameValue);
@@ -373,7 +385,7 @@ import shipCalculator from './shipCalculator.js';
         nameTBox.id = ''; //todo the unique id stuff (this comment is repeated)
         nameTBox.type = "text";
         nameTBox.inputMode = "text";
-        if (validNameVal == "") {nameTBox.placeholder = `Subsystem Name ${subsystemUniqueNum}`}
+        if (validNameVal == "") {nameTBox.placeholder = `Subsystem Name`}
         else {nameTBox.value = validNameVal}
 
         cellName.appendChild(nameTBox);
@@ -384,6 +396,19 @@ import shipCalculator from './shipCalculator.js';
         cellEffects.appendChild(effectUL)
 
         effectList.forEach(effect => {
+            addSubsystemEffect(effectUL, effect)
+        });
+
+        subsystemList.splice()
+
+        saveAllSubsystems();
+
+        console.log(effectUL.children)
+        //add event listenter for duplicating subsystem
+        dupeBtn.addEventListener("click", () => {addNewSubsystem(validateString(nameTBox.value), /*list of effects*/)})
+    }
+
+    function addSubsystemEffect(parent, effect) {
             //validate DropBox input
             let validEffectType = validateDropDown(validEffects, effect[0]);
             if (!validEffectType == '') {validEffectType = "rechargeRate"} 
@@ -409,6 +434,7 @@ import shipCalculator from './shipCalculator.js';
             newEffectOption4.value = "requiredEnergy%";
             newEffectOption4.textContent = "Required Energy (%)";
 
+
             //text box
             //validate value
             let validEffectValue = validateAsNumericInput(effect[1]);
@@ -421,15 +447,9 @@ import shipCalculator from './shipCalculator.js';
             else {textBox.value = validEffectValue;}
 
             //arrange and append
-            //label glues he drop box to the text box
-            let newLabel = document.createElement("label");
-            newLabel.for = `subsystem${/*which number element is this*/''}`; //todo the unique id stuff (this comment is repeated)
 
-            //add label to listing
-            newEffectLi.appendChild(newLabel);
-
-            //add dropbox to label
-            newLabel.appendChild(newDropBox);
+            //add dropbox to listing
+            newEffectLi.appendChild(newDropBox);
             //add drop box options to drop box
             newDropBox.appendChild(newEffectOption1);
             newDropBox.appendChild(newEffectOption2);
@@ -440,63 +460,19 @@ import shipCalculator from './shipCalculator.js';
             newEffectLi.appendChild(textBox)
         
             //output (add the new effect listing to unordered list)
-            effectUL.appendChild(newEffectLi);
-        });
-
-
-
-        // //method 1 - insert straight html
-        // //if output value should be a placeholder or value
-        // let effectValuePHOrVal = `value='${validEffectValue}'`;
-        // if (effectValue == 0) {effectValuePHOrVal = "placeholder='0'";}
-
-        // //total subsystems
-        // //this may not work as an earlier item being deleted will ruin it
-        // const subsystemUniqueNum = subsystemTable.rows.length;
-        // //name
-        // let outputName = "subsystemName${subsystemUniqueNum}"
-        // if (validNameVal == "") {outputName = `placeholder="Subsystem Name ${subsystemUniqueNum}"`}
-        // else {outputName = `value='${validNameVal}'`}
-        // //create new subsystem
-        // const newSubsystem = `
-        // <!--Subsystem${subsystemUniqueNum}-->
-        //   <tr id="subsystem${subsystemUniqueNum}">
-        //     <!--Add/Delete Buttons-->
-        //     <td class="popup"><button class="dupeBtn" value="${subsystemUniqueNum}">+</button><span class="popupText">Duplicate Subsystem</span></td>
-        //     <td class="popup"><button class="deleteBtn" value="${subsystemUniqueNum}">─</button><span class="popupText">Remove Subsystem</span></td>
-        //     <!--Name-->
-        //     <td><input type="text" inputmode="text" id="subsystemName${subsystemUniqueNum}" ${outputName}></input></td>
-        //     <!--List of effects-->
-        //     <td>
-        //       <ul>
-        //         <li>
-        //           <label id="subsystem${subsystemUniqueNum}DropBox" for="subsystem${subsystemUniqueNum}">
-        //             <select>
-        //                 <option value="rechargeRate" ${validEffectType === "rechargeRate" ? "selected" : ""}>Recharge Rate</option>
-        //                 <option value="generatedEnergy%" ${validEffectType === "generatedEnergy%" ? "selected" : ""}>Generated Energy (%)</option>
-        //                 <option value="requiredEnergy+" ${validEffectType === "requiredEnergy+" ? "selected" : ""}>Required Energy (+)</option>
-        //                 <option value="requiredEnergy%" ${validEffectType === "requiredEnergy%" ? "selected" : ""}>Required Energy (%)</option>
-        //                 <!--etc-->
-        //             </select>
-        //           </label>
-        //           <input type="text" inputmode="numeric" id="subsystem${subsystemUniqueNum}" ${effectValuePHOrVal}></input>
-        //         </li>
-        //       </ul>
-        //     </td>
-        //   </tr>
-        // `
-
-        // //add to table
-        // subsystemTable.insertAdjacentHTML("beforeend", newSubsystem);
-
-        // //handle button event listeners
-        // subsystemArray.push(document.getElementById(`subsystem${subsystemUniqueNum}`));
-        // addNewSubsystemEventListener(subsystemArray.length-1);
+            parent.appendChild(newEffectLi);
     }
 
-    function removeSubsystem(rowToRemove) {
+    function loadAllSubsystems(allSubsystems) {
+        allSubsystems.forEach(subsystem => {
+            addNewSubsystem(subsystem[0], subsystem[1])
+        });
+    }
 
-        //handle button event listeners
+    function saveAllSubsystems () {
+        let JSONSubsystemList = JSON.stringify(subsystemList)
+        //save to local storage
+        localStorage.setItem("subsystemList", JSONSubsystemList)
     }
 
     //handles input data to ship from textboxes and running the ship calc
