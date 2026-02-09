@@ -72,31 +72,30 @@ h2 {
 
 
 /*pop up message boxes*/
-.popup {
+.popupBtn {
     position: relative;
 }
 .popupText {
-    visibility: hidden;
+    /*positions realitive to parent which should be popupBtn*/
     position: absolute;
     z-index: 1;
     top: 125%;
-    left: -10%;
-    margin-left: -50%;
+    left: 50%;
+    
+    transform: translateX(-50%);
     background-color: lightcyan;
     border: dotted;
     padding: 10%;
 
-    opacity: 0;
+    visibility: hidden;
     /* Add transition for smooth animation of opacity and visibility */
+    opacity: 0;
     transition: opacity 0.4s ease-in, visibility 0.4s ease-in; 
+    /*Disables hover over popup text itself*/
+    pointer-events: none;
 }
-.popup button:hover + .popupText{
-    transition-delay: 0.75s;
+.popupBtn:hover .popupText {
     visibility: visible;
-
-    opacity: 1;
-
-}
-.popup:hover {
-    cursor: default;
+    transition-delay: 0.75s;
+    opacity: 1; 
 }

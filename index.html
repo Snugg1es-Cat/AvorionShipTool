@@ -153,39 +153,13 @@
       <table id="subsystemTable"> <!--SubSystems-->
         <thead>
           <tr>
-            <th colspan="2" class="popup"><button id="addNewSubsystemBtn">New</button><span class="popupText">Add New Subsystem</span></th>
+            <th colspan="2" class="popup"><button id="addNewSubsystemBtn" class="popupBtn">New<span class="popupText">Add New Subsystem</span></button></th>
             <th>Name</th>
             <th>Effect</th>
           </tr>
         </thead>
         <tbody>
-          <!--example subsystem will get controller to make/delete these-->
-          <!--Subsystem0-->
-          <tr>
-            <!--Add/Delete Buttons-->
-            <td class="popup"><button class="dupe">+</button><span class="popupText">Duplicate Subsystem</span></td>
-            <td class="popup"><button class="delete">─</button><span class="popupText">Remove Subsystem</span></td>
-            <!--Name-->
-            <td><input type="text" inputmode="text" id="subsystemName1" placeholder="Subsystem Name 1"></input></td>
-            <!--List of effects-->
-            <td>
-              <ul>
-                <li>
-                  <select>
-                    <option value="rechargeRate">Recharge Rate</option>
-                    <option value="generatedEnergy%">Generated Energy (%)</option>
-                    <option value="requiredEnergy+">Required Energy (+)</option>
-                    <option value="requiredEnergy%">Required Energy (%)</option>
-                    <!--etc-->
-                  </select>
-                  <input type="text" inputmode="numeric" id="subsystem0" placeholder="0"></input>
-                </li>
-              </ul>
-            </td>
-          </tr>
-
-          <!--Second subsystem-->
-
+          <!--Subsystems will get added to here managed by JS-->>
         </tbody>
       </table>
 
