@@ -320,7 +320,7 @@ import shipCalculator from './shipCalculator.js';
     }
 
     //subsystem table
-    function addNewSubsystem(nameValue="", effectList=[["rechargeRate",'0'],["rechargeRate",'45'],["requiredEnergy+",'0']]) {
+    function addNewSubsystem(nameValue="", effectList=[["rechargeRate",'0']]) {
 
         //method 2 - create DOM elements
 
@@ -352,10 +352,10 @@ import shipCalculator from './shipCalculator.js';
         let popupSpanDupe = document.createElement("span");
         popupSpanDupe.classList.add("popupText");
         popupSpanDupe.textContent = "Duplicate Subsystem";
-        cellDupe.classList.add("popup");
+        dupeBtn.classList.add("popupBtn");
 
         cellDupe.appendChild(dupeBtn);
-        cellDupe.appendChild(popupSpanDupe);
+        dupeBtn.appendChild(popupSpanDupe);
         
         //Delete button
         let deleteBtn = document.createElement("button");
@@ -364,10 +364,10 @@ import shipCalculator from './shipCalculator.js';
         let popupSpanDel = document.createElement("span");
         popupSpanDel.classList.add("popupText");
         popupSpanDel.textContent = "Remove Subsystem";
-        cellDelete.classList.add("popup");
+        deleteBtn.classList.add("popupBtn");
 
         cellDelete.appendChild(deleteBtn)
-        cellDelete.appendChild(popupSpanDel);
+        deleteBtn.appendChild(popupSpanDel);
         //add event listenter for deleting subsystem
         deleteBtn.addEventListener("click", () => {
             //remove from DOM
@@ -396,71 +396,139 @@ import shipCalculator from './shipCalculator.js';
         cellEffects.appendChild(effectUL)
 
         effectList.forEach(effect => {
-            addSubsystemEffect(effectUL, effect)
+            addSubsystemEffect(effectUL, effect);
         });
 
         subsystemList.splice()
 
         saveAllSubsystems();
 
-        console.log(effectUL.children)
         //add event listenter for duplicating subsystem
-        dupeBtn.addEventListener("click", () => {addNewSubsystem(validateString(nameTBox.value), /*list of effects*/)})
+        console.log({effectUL})
+        dupeBtn.addEventListener("click", () => {addNewSubsystem(validateString(nameTBox.value), readEffects(effectUL))})
+
+        //readAllSubsystems test
+        console.log("readAllSubsystems add")
+        readAllSubsystems()
     }
 
     function addSubsystemEffect(parent, effect) {
-            //validate DropBox input
-            let validEffectType = validateDropDown(validEffects, effect[0]);
-            if (!validEffectType == '') {validEffectType = "rechargeRate"} 
+        //validate DropBox input
+        let validEffectType = validateDropDown(validEffects, effect[0]);
+        if (validEffectType == '') {validEffectType = "rechargeRate"} 
 
-            let newEffectLi = document.createElement("li");
+        let newEffectLi = document.createElement("li");
 
-            //drop box
-            let newDropBox = document.createElement("select");
+        //drop box
+        let newDropBox = document.createElement("select");
 
-            let newEffectOption1 = document.createElement("option");
-            newEffectOption1.value = "rechargeRate";
-            newEffectOption1.textContent = "Recharge Rate";
-            
-            let newEffectOption2 = document.createElement("option");
-            newEffectOption2.value = "generatedEnergy%";
-            newEffectOption2.textContent = "Generated Energy (%)";
-            
-            let newEffectOption3 = document.createElement("option");
-            newEffectOption3.value = "requiredEnergy+";
-            newEffectOption3.textContent = "Required Energy (+)";
-            
-            let newEffectOption4 = document.createElement("option");
-            newEffectOption4.value = "requiredEnergy%";
-            newEffectOption4.textContent = "Required Energy (%)";
-
-
-            //text box
-            //validate value
-            let validEffectValue = validateAsNumericInput(effect[1]);
-
-            let textBox = document.createElement('input');
-            textBox.type = "";
-            textBox.inputMode = "numeric";
-            textBox.id = `subsystem${/*which number element is this*/''}`; //todo the unique id stuff (this comment is repeated)
-            if (validEffectValue == '0') {textBox.placeholder = '0';}
-            else {textBox.value = validEffectValue;}
-
-            //arrange and append
-
-            //add dropbox to listing
-            newEffectLi.appendChild(newDropBox);
-            //add drop box options to drop box
-            newDropBox.appendChild(newEffectOption1);
-            newDropBox.appendChild(newEffectOption2);
-            newDropBox.appendChild(newEffectOption3);
-            newDropBox.appendChild(newEffectOption4);
-
-            //add textboxt into listing
-            newEffectLi.appendChild(textBox)
+        let newEffectOption1 = document.createElement("option");
+        newEffectOption1.value = "rechargeRate";
+        newEffectOption1.textContent = "Recharge Rate";
         
-            //output (add the new effect listing to unordered list)
-            parent.appendChild(newEffectLi);
+        let newEffectOption2 = document.createElement("option");
+        newEffectOption2.value = "generatedEnergy%";
+        newEffectOption2.textContent = "Generated Energy (%)";
+        
+        let newEffectOption3 = document.createElement("option");
+        newEffectOption3.value = "requiredEnergy+";
+        newEffectOption3.textContent = "Required Energy (+)";
+        
+        let newEffectOption4 = document.createElement("option");
+        newEffectOption4.value = "requiredEnergy%";
+        newEffectOption4.textContent = "Required Energy (%)";
+
+
+        //text box
+        //validate value
+        let validEffectValue = validateAsNumericInput(effect[1].toString());
+
+        let textBox = document.createElement('input');
+        textBox.type = "";
+        textBox.inputMode = "numeric";
+        textBox.id = `subsystem${/*which number element is this*/''}`; //todo the unique id stuff (this comment is repeated)
+        if (validEffectValue == '0') {textBox.placeholder = '0';}
+        else {textBox.value = validEffectValue;}
+
+        //Effect Add/Delete Buttons
+        //Dupe
+        const dupeBtn = document.createElement("button");
+        dupeBtn.textContent = "+";
+        //popup
+        dupeBtn.classList.add("popupBtn");
+        const popupSpanDupe = document.createElement("span");
+        popupSpanDupe.classList.add("popupText");
+        popupSpanDupe.textContent = "Duplicate Effect";
+        dupeBtn.appendChild(popupSpanDupe);
+
+        //delete button
+        const deleteBtn = document.createElement("button");
+        deleteBtn.textContent = "─";
+        //popup
+        deleteBtn.classList.add("popupBtn");
+        const popupSpanDel = document.createElement("span");
+        popupSpanDel.classList.add("popupText");
+        popupSpanDel.textContent = "Delete Effect";
+        deleteBtn.appendChild(popupSpanDel);
+
+        //Add Event Listenters
+        //Name Text Box
+        textBox.addEventListener("input", () => {autoSubmit(setOutputAsRegOrPH, [textBox, validateAsNumericInput(textBox.value)])})
+
+        //Duplicate Subsystem
+        dupeBtn.addEventListener("click", () => {
+            addSubsystemEffect(parent, [newDropBox.value, textBox.value]);
+
+            //check length of effect list
+            const liList = parent.children;
+            if (liList.length == 2) {
+                //give first effect its delete button back
+                liList[0].appendChild(deleteBtn);
+            }
+        })
+
+        //Deleting Subsystem
+        deleteBtn.addEventListener("click", () => {
+            //remove from DOM
+            newEffectLi.remove();
+
+            //check length of effect list
+            const liList = parent.children;
+            if (liList.length == 1) {
+                //remove delete button of last element
+                liList[0].children[3].remove();
+            }
+            //remove from JS
+            subsystemList
+            //save to local storage
+            saveAllSubsystems();
+        })
+
+        //arrange and append
+
+        //add dropbox to listing
+        newEffectLi.appendChild(newDropBox);
+        //add drop box options to drop box
+        newDropBox.appendChild(newEffectOption1);
+        newDropBox.appendChild(newEffectOption2);
+        newDropBox.appendChild(newEffectOption3);
+        newDropBox.appendChild(newEffectOption4);
+
+        //set dropbox
+        newDropBox.value = validEffectType;
+
+        //add textboxt into listing
+        newEffectLi.appendChild(textBox);
+
+        //add buttons
+        newEffectLi.appendChild(dupeBtn);
+        //skip the delete button if the parent is empty
+        if (!parent.children.length == 0) {
+            newEffectLi.appendChild(deleteBtn);
+        }
+    
+        //output (add the new effect listing to unordered list)
+        parent.appendChild(newEffectLi);
     }
 
     function loadAllSubsystems(allSubsystems) {
@@ -473,6 +541,43 @@ import shipCalculator from './shipCalculator.js';
         let JSONSubsystemList = JSON.stringify(subsystemList)
         //save to local storage
         localStorage.setItem("subsystemList", JSONSubsystemList)
+    }
+
+    function readAllSubsystems () {
+        const childList = subsystemTableBody.children;
+        //list off everything
+        let outputList = [];
+        Array.from(childList).forEach(child => {
+            //list of this system
+            let subsystemList = []
+
+            const subsystemParts = child.children;
+            //Subsystem Name
+            const nameTBox = subsystemParts[2].children[0];
+            subsystemList.push(validateString(nameTBox.value))
+
+            //Subsystem effects
+            //Effects unordered list element
+            const effectUL = subsystemParts[3].children[0];
+            console.log({effectUL})
+            subsystemList.push(readEffects(effectUL))
+
+            outputList.push(subsystemList);
+        })
+        console.log({outputList})
+        return outputList
+    }
+
+    function readEffects(effectUL) {
+        const effectsLiElements = effectUL.children;
+        let effectsList = [];
+        Array.from(effectsLiElements).forEach(effect => {
+            const effectParts = effect.children;
+            const typeDropDown = effectParts[0];
+            const effectTBox = effectParts[1];
+            effectsList.push([validateDropDown(validEffects,typeDropDown.value), validateAsNumericInput(effectTBox.value)])
+        })
+        return effectsList;
     }
 
     //handles input data to ship from textboxes and running the ship calc
@@ -555,3 +660,8 @@ import shipCalculator from './shipCalculator.js';
         //run calc
         ship.runCalcAll();
         updateAllOutputStats();
+
+
+        //readAllSubsystems test
+        console.log("readAllSubsystems reload")
+        readAllSubsystems()
