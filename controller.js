@@ -23,9 +23,6 @@ import shipCalculator from './shipCalculator.js';
         const buildingKnowledgeDropBox = document.getElementById('buildingKnowledgeDropBox');
         const blockPaletteDropBox = document.getElementById('blockPaletteDropBox');
 
-        //Subsystem List
-        const subsystemList = [];
-
         //Subsystem table
         const subsystemTableBody = document.querySelector("#subsystemTable tbody");
         const addNewSubsystemBtn =  document.getElementById("addNewSubsystemBtn");
@@ -108,13 +105,6 @@ import shipCalculator from './shipCalculator.js';
         //subsystems
         addNewSubsystemBtn.addEventListener("click", () => {addNewSubsystem();})
 
-
-        //addNewSubsystemEventListener();
-        function addNewSubsystemEventListener(index) {
-            //connect for both duplicate and delete buttons 
-            //pulling from array of all subsystems
-        }
-
         //Input Allocation Variables
         shieldAllocationTextBox.addEventListener("input", () => {autoSubmit(inputAllocation, ["shieldPP", shieldAllocationTextBox]);})
         engineAllocationTextBox.addEventListener("input", () => {autoSubmit(inputAllocation, ["enginePP", engineAllocationTextBox]);})
@@ -130,7 +120,6 @@ import shipCalculator from './shipCalculator.js';
     let autoSubmitDelay
     function autoSubmit(Func, paramArray=[]) {
         //triggers fed function feeding it a array as parameters after a delay reduces load of server machine
-
         //Timeout is a set of built in JS functions
         clearTimeout(autoSubmitDelay)
         autoSubmitDelay = setTimeout(() => {
@@ -173,20 +162,35 @@ import shipCalculator from './shipCalculator.js';
     function validateAsNumericInput(string) {
         //strips input string to only allow valid numbers and converts to Number
 
-        //remove everything but 0-9 and . (g = global flag ensuring it matches all instances)
+        //remove everything but 0-9, . and - (g = global flag ensuring it matches all instances)
+        let validatedString = string.replace(/[^0-9.-]/g, '');
         //replace first decimal point '.' with a 'D'
         //remove other remaining decimal points '.'
         //set 'D' back to decimal point
-        let validatedString = string.replace(/[^0-9.]/g, '').replace('.', 'D').replaceAll('.', '').replace('D', '.');
+        validatedString = validatedString.replace('.', 'D').replaceAll('.', '').replace('D', '.');
+        //does same to negative sign "-"
+
+        //handle negatives
+        let invalidDecimalPosition = 0; //the decimal point cant be the first character
+        let decimalNegSignFix = "";
+        if (validatedString.charAt(0) == '-') {
+            validatedString = 'N'+validatedString.slice(1);
+            invalidDecimalPosition = 1; //if negative the decimal point cant be the second character of the string 
+            decimalNegSignFix = '-'; //adds the negative sign to a fixed decimal point
+        };
+        validatedString = validatedString.replaceAll('-', '').replace('N', '-');
         
         //standardise 0 to remove . and trailing 0's
-        if(validatedString > 0) {
+        if (validatedString != 0 && validatedString != '-') {
             //inserts 0 if the decimal point is the first character
-            if (validatedString.charAt(0) == '.') {validatedString = '0'+validatedString;}
+            if (validatedString.charAt(invalidDecimalPosition) == '.') {validatedString = decimalNegSignFix+'0'+validatedString.slice(invalidDecimalPosition);}
         }
         else {validatedString = 0;}
-        
-        return Number(validatedString);
+
+        //convert to number
+        validatedString = Number(validatedString)
+        if (validatedString.isNaN) {validatedString = 0;}
+        return validatedString;
     }
 
     //Validate Drop Boxes
@@ -285,6 +289,12 @@ import shipCalculator from './shipCalculator.js';
 
 
 //functions for main Ship Calc
+    //run ship calculator
+    function runShipCalc() {
+        feedShipSubsystemEffects();
+        ship.runCalcAll();
+        updateAllOutputStats();
+    }
 
     //updates building Knowledge 
     function updateBK() {
@@ -293,9 +303,7 @@ import shipCalculator from './shipCalculator.js';
             ship.changeBuildingKnowledge(validBKVal)
             PPLimitTextBox.value = ship.lookupPPLimitByBK(validBKVal);
 
-            
-            ship.runCalcAll();
-            updateAllOutputStats()
+            runShipCalc();
         }
     }
 
@@ -306,8 +314,7 @@ import shipCalculator from './shipCalculator.js';
             ship.palette.setAll(validateDropDown(validBK, buildingKnowledgeDropBox.value), validPalette, validateDropDown(validBK, buildingKnowledgeDropBox.value))
             
             
-            ship.runCalcAll(); 
-            updateAllOutputStats()
+            runShipCalc();
         }
     }
 
@@ -321,8 +328,6 @@ import shipCalculator from './shipCalculator.js';
 
     //subsystem table
     function addNewSubsystem(nameValue="", effectList=[["rechargeRate",'0']]) {
-
-        //method 2 - create DOM elements
 
         //Create a new row for the new subsystem
         let newSubsystem = document.createElement("tr");
@@ -338,8 +343,6 @@ import shipCalculator from './shipCalculator.js';
         newSubsystem.appendChild(cellDelete);
         newSubsystem.appendChild(cellName);
         newSubsystem.appendChild(cellEffects);
-
-        const subsystemUniqueNum = "0"; //todo the unique id stuff (this comment is repeated)
 
         //append subsyetem to the table
         subsystemTableBody.appendChild(newSubsystem);
@@ -368,21 +371,11 @@ import shipCalculator from './shipCalculator.js';
 
         cellDelete.appendChild(deleteBtn)
         deleteBtn.appendChild(popupSpanDel);
-        //add event listenter for deleting subsystem
-        deleteBtn.addEventListener("click", () => {
-            //remove from DOM
-            newSubsystem.remove();
-            //remove from JS
-            subsystemList
-            //save to local storage
-            saveAllSubsystems();
-        })
 
         //Subsystem name textbox
         const validNameVal = validateString(nameValue);
 
         let nameTBox = document.createElement("input");
-        nameTBox.id = ''; //todo the unique id stuff (this comment is repeated)
         nameTBox.type = "text";
         nameTBox.inputMode = "text";
         if (validNameVal == "") {nameTBox.placeholder = `Subsystem Name`}
@@ -399,17 +392,20 @@ import shipCalculator from './shipCalculator.js';
             addSubsystemEffect(effectUL, effect);
         });
 
-        subsystemList.splice()
-
-        saveAllSubsystems();
-
-        //add event listenter for duplicating subsystem
-        console.log({effectUL})
+        //add event listenters
+        //duplicating subsystem
         dupeBtn.addEventListener("click", () => {addNewSubsystem(validateString(nameTBox.value), readEffects(effectUL))})
 
-        //readAllSubsystems test
-        console.log("readAllSubsystems add")
-        readAllSubsystems()
+        //deleting subsystem
+        deleteBtn.addEventListener("click", () => {
+            //remove from DOM
+            newSubsystem.remove();
+            //save to local storage
+            saveAllSubsystems();
+        })
+
+        //save subsystems
+        saveAllSubsystems();
     }
 
     function addSubsystemEffect(parent, effect) {
@@ -438,7 +434,6 @@ import shipCalculator from './shipCalculator.js';
         newEffectOption4.value = "requiredEnergy%";
         newEffectOption4.textContent = "Required Energy (%)";
 
-
         //text box
         //validate value
         let validEffectValue = validateAsNumericInput(effect[1].toString());
@@ -446,7 +441,6 @@ import shipCalculator from './shipCalculator.js';
         let textBox = document.createElement('input');
         textBox.type = "";
         textBox.inputMode = "numeric";
-        textBox.id = `subsystem${/*which number element is this*/''}`; //todo the unique id stuff (this comment is repeated)
         if (validEffectValue == '0') {textBox.placeholder = '0';}
         else {textBox.value = validEffectValue;}
 
@@ -471,39 +465,6 @@ import shipCalculator from './shipCalculator.js';
         popupSpanDel.textContent = "Delete Effect";
         deleteBtn.appendChild(popupSpanDel);
 
-        //Add Event Listenters
-        //Name Text Box
-        textBox.addEventListener("input", () => {autoSubmit(setOutputAsRegOrPH, [textBox, validateAsNumericInput(textBox.value)])})
-
-        //Duplicate Subsystem
-        dupeBtn.addEventListener("click", () => {
-            addSubsystemEffect(parent, [newDropBox.value, textBox.value]);
-
-            //check length of effect list
-            const liList = parent.children;
-            if (liList.length == 2) {
-                //give first effect its delete button back
-                liList[0].appendChild(deleteBtn);
-            }
-        })
-
-        //Deleting Subsystem
-        deleteBtn.addEventListener("click", () => {
-            //remove from DOM
-            newEffectLi.remove();
-
-            //check length of effect list
-            const liList = parent.children;
-            if (liList.length == 1) {
-                //remove delete button of last element
-                liList[0].children[3].remove();
-            }
-            //remove from JS
-            subsystemList
-            //save to local storage
-            saveAllSubsystems();
-        })
-
         //arrange and append
 
         //add dropbox to listing
@@ -522,28 +483,68 @@ import shipCalculator from './shipCalculator.js';
 
         //add buttons
         newEffectLi.appendChild(dupeBtn);
-        //skip the delete button if the parent is empty
-        if (!parent.children.length == 0) {
-            newEffectLi.appendChild(deleteBtn);
-        }
+        newEffectLi.appendChild(deleteBtn);
     
         //output (add the new effect listing to unordered list)
         parent.appendChild(newEffectLi);
+
+        //handle hiding/showing the first effects delete button to prevent softlock (also triggered on effect deletion)
+        handleFirstEffectDeleteBtn(parent);
+
+        //Add Event Listenters
+        //Name Text Box
+        textBox.addEventListener("input", () => {autoSubmit(effectTextBoxEvent, [textBox]);});
+
+        //Duplicate Subsystem
+        dupeBtn.addEventListener("click", () => {
+            addSubsystemEffect(parent, [newDropBox.value, textBox.value]);
+            //save to local storage
+            saveAllSubsystems();
+        })
+
+        //Deleting Subsystem
+        deleteBtn.addEventListener("click", () => {
+            //remove from DOM
+            newEffectLi.remove();
+
+            //handle hiding/showing the first effects delete button to prevent softlock (also triggered on effect creation)
+            handleFirstEffectDeleteBtn(parent);
+
+            //save to local storage
+            saveAllSubsystems();
+        })
+
+        //save to local storage
+        saveAllSubsystems();
+    }
+    function effectTextBoxEvent(textBox) {
+            setOutputAsRegOrPH, [textBox, validateAsNumericInput(textBox.value)];
+            saveAllSubsystems();
+        }
+
+    function handleFirstEffectDeleteBtn(parent) {
+        const effectLiList = parent.children;
+        if (effectLiList.length == 1) {
+            effectLiList[0].children[3].hidden = true; //effectLiList[0] is the first effect in the list
+        }
+        else {effectLiList[0].children[3].hidden = false;} //effectLiList[0].children[3] is the delete button (3rd element)
     }
 
-    function loadAllSubsystems(allSubsystems) {
+    function loadAllSubsystems() {
+        const JSONSubsystemList = localStorage.getItem("subsystemList");
+        const allSubsystems = JSON.parse(JSONSubsystemList);
         allSubsystems.forEach(subsystem => {
             addNewSubsystem(subsystem[0], subsystem[1])
         });
     }
 
-    function saveAllSubsystems () {
-        let JSONSubsystemList = JSON.stringify(subsystemList)
+    function saveAllSubsystems() {
+        const JSONSubsystemList = JSON.stringify(readAllSubsystems());
         //save to local storage
-        localStorage.setItem("subsystemList", JSONSubsystemList)
+        localStorage.setItem("subsystemList", JSONSubsystemList);
     }
 
-    function readAllSubsystems () {
+    function readAllSubsystems() {
         const childList = subsystemTableBody.children;
         //list off everything
         let outputList = [];
@@ -559,12 +560,10 @@ import shipCalculator from './shipCalculator.js';
             //Subsystem effects
             //Effects unordered list element
             const effectUL = subsystemParts[3].children[0];
-            console.log({effectUL})
             subsystemList.push(readEffects(effectUL))
 
             outputList.push(subsystemList);
         })
-        console.log({outputList})
         return outputList
     }
 
@@ -580,19 +579,34 @@ import shipCalculator from './shipCalculator.js';
         return effectsList;
     }
 
+    //inserts subsystem effect data into the calculator
+    function feedShipSubsystemEffects() {
+        //clear initial values
+        ship.setSubsystemEffectsToDefault();
+
+        //iterate through all effects and add to ship
+        const allSubsystems = readAllSubsystems();
+        allSubsystems.forEach(subsystem => {
+            const effectsList = subsystem[1];
+            effectsList.forEach(effect => {
+                validateDropDown(effect[0])
+            })
+        });
+    }
+
     //handles input data to ship from textboxes and running the ship calc
     function inputAllocation(varToChange, input) {
         let newValue = validateAsNumericInput(input.value);
         setOutputAsRegOrPH(input, newValue);
         ship[varToChange] = newValue;
-        ship.runCalcAll();
-        updateAllOutputStats();
+
+        runShipCalc();
     }
     //same as inputAllocation except for checkboxes
     function inputAllocationCheckBox(varToChange, input) {
         ship[varToChange] = validateCheckBox(input);
-        ship.runCalcAll();
-        updateAllOutputStats();
+        
+        runShipCalc();
     }
     //update output all
     function updateAllOutputStats() {
@@ -639,6 +653,9 @@ import shipCalculator from './shipCalculator.js';
         let validArmorTotTBValue = validateAsNumericInput(armorTotalTextBox.value);
         let validThrusterTotTBValue = validateAsNumericInput(thrusterTotalTextBox.value);
 
+        //subsystem
+        loadAllSubsystems();
+
         //set initial textbox values on reload
         setOutputAsRegOrPH(shieldAllocationTextBox, validShieldAlloTBValue);
         setOutputAsRegOrPH(engineAllocationTextBox, validEngineAlloTBValue);
@@ -658,10 +675,4 @@ import shipCalculator from './shipCalculator.js';
         setOutputAsRegOrPH(PPLimitTextBox, validateAsNumericInput(PPLimitTextBox.value));
 
         //run calc
-        ship.runCalcAll();
-        updateAllOutputStats();
-
-
-        //readAllSubsystems test
-        console.log("readAllSubsystems reload")
-        readAllSubsystems()
+        runShipCalc();
