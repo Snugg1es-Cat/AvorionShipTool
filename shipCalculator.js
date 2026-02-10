@@ -8,9 +8,8 @@ export default class shipCalculator {
         // set default PPLimit
         this.PPLimit = this.lookupPPLimitByBK(buildingKnowledge);
 
-        //init default subsytem stats
-        this.generatedEnergyMult = 1;
-        this.shieldDuribilityMult = 1;
+        //init default subsytem effects
+        this.setSubsystemEffectsToDefault();
 
         //init default allocation varibles
         this.shieldPP = 0;
@@ -46,9 +45,15 @@ export default class shipCalculator {
     }
 
     //Triggers a full ship calculation
-    runCalcAll(){
+    runCalcAll() {
         this.shieldCalcHandler();
         this.engineCalcHandler();
+    }
+
+    //sets Subsystem Effects back to default
+    setSubsystemEffectsToDefault() {
+        this.generatedEnergyMult = 1;
+        this.shieldDuribilityMult = 1;
     }
 
     //change Building Knowledge and handle subsequent changes
