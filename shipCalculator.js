@@ -1,3 +1,5 @@
+import palette from './palette.js';
+
 //handles the calculation for ship statsengineerOverclock
 export default class shipCalculator {
     constructor (allBlocks, optimization, buildingKnowledge) {
@@ -40,6 +42,9 @@ export default class shipCalculator {
         this.acceleration = 0;
         this.enginesTotalWeight = 0;
 
+        //other
+        this.subsystemEGenCount = 0;
+
         //set initial BK
         this.changeBuildingKnowledge(buildingKnowledge);
     }
@@ -48,12 +53,26 @@ export default class shipCalculator {
     runCalcAll() {
         this.shieldCalcHandler();
         this.engineCalcHandler();
+
+        //other
+        if (this.palette.checkPowerSource()) {
+            //calc how many generator blocks are required to run all subsystems
+            this.subsystemEGenCount = this.requiredEnergyAdditive / this.palette.generator.other;
+        } else {
+            //use solar panels instead
+            this.subsystemEGenCount = this.requiredEnergyAdditive / this.palette.solarPanel.other;
+        }
     }
 
     //sets Subsystem Effects back to default
     setSubsystemEffectsToDefault() {
-        this.generatedEnergyMult = 1;
-        this.shieldDuribilityMult = 1;
+
+        this.generatedEnergyMultiplier = 1;
+        
+        this.requiredEnergyMultiplier = 1;
+        this.requiredEnergyAdditive = 0;
+
+        this.shieldDuribilityMultiplier = 1;
     }
 
     //change Building Knowledge and handle subsequent changes
@@ -85,6 +104,8 @@ export default class shipCalculator {
 
         //if shieldGenerator is unset or no power generators have been set
         if (this.palette.shieldGenerator == 'unset' || (this.palette.generator == 'unset' || this.palette.solarPanel == 'unset')) {console.log('shieldCalcHandler error: palette unset')}
+        //check if shieldGenerator is valid
+        else if (Number.isNaN(this.palette.shieldGenerator.other)) {console.log('invalid shield ganerator')}
         else {
             let blockCountArray = 0
             //checks if shield generator is providing shield strength
@@ -113,7 +134,7 @@ export default class shipCalculator {
             
 
             //stats
-            this.shieldDurability = this.palette.shieldGenerator.other * this.sGenCount * this.shieldDuribilityMult;
+            this.shieldDurability = this.palette.shieldGenerator.other * this.sGenCount * this.shieldDuribilityMultiplier;
         }
     }
 
@@ -124,7 +145,7 @@ export default class shipCalculator {
         //balances energy generating and energy consuming blocks
         //based on the given processing power limit
         //returns list containing the block counts of each
-        let ratio = eGen.other*this.generatedEnergyMult / block.reqEnergy;
+        let ratio = (eGen.other*this.generatedEnergyMultiplier) / (block.reqEnergy * this.requiredEnergyMultiplier);
         let genCount = ppLimit/(ratio+1);
         let blockCount = genCount*ratio;
 
@@ -138,7 +159,10 @@ export default class shipCalculator {
         let overclockMult = 1;
         if (engiBool) { crewType = 'reqCrewEngineer'; }
         if (overclock) { overclockMult = 3; }
-        return (block[crewType] * blockCount) * overclockMult;
+        //validate block as a valid crew type req oherwise set it as 0
+        // if NaN will use 0 instead
+        let crewRequired = block[crewType] || 0;
+        return (crewRequired * blockCount) * overclockMult;
     }
     //calculate the crew Quarter blocks needed
     calcCrewQuarters(reqCrew) {
@@ -149,13 +173,16 @@ export default class shipCalculator {
         //checking energy generator type
         // generator
         let eCalResults
-        if(this.palette.checkPowerSource) {
-            eCalResults = this.engineCalculator(this.enginePP, this.palette.engine, this.palette.generator, this.palette.crewQuarters, this.engineerOverclock, this.palette.shieldGenerator, this.sGenCount, this.palette.thruster, this.thrusterCount)
+        //select energy source block (solarPanel or generator)
+        let energySource = this.palette.solarPanel;
+        if(this.palette.checkPowerSource()) {
+            energySource = this.palette.generator;
         }
-        //solar panels
-        else {
-            eCalResults = this.engineCalculator();
-        }
+
+        //run the calc
+        eCalResults = this.engineCalculator(this.enginePP, this.palette.engine, energySource, this.palette.crewQuarters, this.engineerOverclock, this.palette.shieldGenerator, this.sGenCount, this.palette.thruster, this.thrusterCount)
+        
+
         this.eGenCountEngines = eCalResults[0];
         this.eCount = eCalResults[1];
         this.cQCountEngines = eCalResults[2];
@@ -170,44 +197,77 @@ export default class shipCalculator {
 
     engineCalculator(ppLimit, engineBlock, energySource, crewQuartersBlock, engineerOverclock, shieldBlock, shieldCount, thrusterBlock, thrusterCount) {
 
-        // engineer polution
-        // Crew Quarters to house the engineers responsible for shields and thrusters
-        // add 0.01 because there is a small base engi requirement I believe to be 0.01
-        let polutedEngiQuartersBlocks = this.calcCrewQuarters(this.calcCrewNeeded(shieldBlock, shieldCount, true, engineerOverclock) + this.calcCrewNeeded(thrusterBlock, thrusterCount, true, engineerOverclock) + 0.01);
-        // power generators to power engi crew quarters
-        let polutedEngiEnergySourceBlocks = (polutedEngiQuartersBlocks*crewQuartersBlock.reqEnergy) / energySource.other;
+        // output calculates differently depending on the type of the energy source
+        // generators need to take up a slice of PP
+        // solar panels do not need to take that slice
+        let returnPackage = [];
+        if (energySource.name == "Generator") {
 
-        //new processing power limit which ignores the engineers required from shields
-        let newPPLimt = ppLimit - (polutedEngiQuartersBlocks + polutedEngiEnergySourceBlocks);
+            // engineer polution
+            // Crew Quarters to house the engineers responsible for shields and thrusters
+            // add 0.01 because there is a small base engi requirement I believe to be 0.01
+            let polutedEngiQuartersBlocks = this.calcCrewQuarters(this.calcCrewNeeded(shieldBlock, shieldCount, true, engineerOverclock) + this.calcCrewNeeded(thrusterBlock, thrusterCount, true, engineerOverclock) + 0.01);
+            // power generators to power engi crew quarters
+            let polutedEngiEnergySourceBlocks = (polutedEngiQuartersBlocks*(crewQuartersBlock.reqEnergy * this.requiredEnergyMultiplier)) / (energySource.other * this.generatedEnergyMultiplier);
 
-        // the ratio between engines and crew quarters
-        // (10/19) is crew quarter density which should be apart of block stats but isnt in this test 
-        //let ratioEtoCQ = (1/90) / (10/19)/*engineBlock.reqCrewEngineer / crewQuartersBlock.other*/
-        let ratioEtoCQ = this.calcCrewNeeded(engineBlock, 1, true, engineerOverclock) /crewQuartersBlock.other;
+            //new processing power limit which ignores the engineers required from shields
+            let newPPLimt = ppLimit - (polutedEngiQuartersBlocks + polutedEngiEnergySourceBlocks);
 
-        
-        let percentageCQ = ratioEtoCQ / (1+ratioEtoCQ)
-        let percentageE = 1 / (1+ratioEtoCQ)
-        let ratioEGenToECQ = energySource.other / (percentageE*engineBlock.reqEnergy + percentageCQ*crewQuartersBlock.reqEnergy)
+            // the ratio between engines and crew quarters
+            // (10/19) is crew quarter density which should be apart of block stats but isnt in this test 
+            //let ratioEtoCQ = (1/90) / (10/19)/*engineBlock.reqCrewEngineer / crewQuartersBlock.other*/
+            let ratioEtoCQ = this.calcCrewNeeded(engineBlock, 1, true, engineerOverclock) /crewQuartersBlock.other;
+
+            //generators    
+            let percentageCQ = ratioEtoCQ / (1+ratioEtoCQ)
+            let percentageE = 1 / (1+ratioEtoCQ)
+            let ratioEGenToECQ = (energySource.other * this.generatedEnergyMultiplier) / (percentageE*(engineBlock.reqEnergy * this.requiredEnergyMultiplier) + percentageCQ*(crewQuartersBlock.reqEnergy * this.requiredEnergyMultiplier))
 
 
-        //energy
-        // the ratio between energy generators to the engine to crew quarter ratio
-        // adjusts engine to crew quater ratio by their energy requirements
-        // let ratioEGenToECQ = energySource.other / (engineBlock.reqEnergy + ratioEtoCQ*crewQuartersBlock.reqEnergy)
-        
-        // expand ratios to fill PP limit
-        let eGenCount = newPPLimt/(ratioEGenToECQ+1);
-        let engineAndCrewQCount = eGenCount*ratioEGenToECQ;
+            //energy
+            // the ratio between energy generators to the engine to crew quarter ratio
+            // adjusts engine to crew quater ratio by their energy requirements
+            // let ratioEGenToECQ = energySource.other / (engineBlock.reqEnergy + ratioEtoCQ*crewQuartersBlock.reqEnergy)
             
-        let engineCount = engineAndCrewQCount * percentageE
-        let crewQuartersCount = engineAndCrewQCount * percentageCQ
+            // expand ratios to fill PP limit
+            let eGenCount = newPPLimt/(ratioEGenToECQ+1);
+            let engineAndCrewQCount = eGenCount*ratioEGenToECQ;
+                
+            let engineCount = engineAndCrewQCount * percentageE
+            let crewQuartersCount = engineAndCrewQCount * percentageCQ
 
-        //add shield gens / crew
-        eGenCount += polutedEngiEnergySourceBlocks;
-        crewQuartersCount += polutedEngiQuartersBlocks;
+            //add polution from shield gens / crew
+            eGenCount += polutedEngiEnergySourceBlocks;
+            crewQuartersCount += polutedEngiQuartersBlocks;
 
-        return [eGenCount, engineCount, crewQuartersCount];
+            returnPackage = [eGenCount, engineCount, crewQuartersCount];
+
+        } else {
+            // using solar panels instead as the energy source
+
+            // calculate engineer polution
+            let polutedEngiQuartersBlocks = this.calcCrewQuarters(this.calcCrewNeeded(shieldBlock, shieldCount, true, engineerOverclock) + this.calcCrewNeeded(thrusterBlock, thrusterCount, true, engineerOverclock) + 0.01);
+            let polutedEngiEnergySourceBlocks = (polutedEngiQuartersBlocks*(crewQuartersBlock.reqEnergy * this.requiredEnergyMultiplier)) / (energySource.other * this.generatedEnergyMultiplier);
+
+            //adjusts ppLimit by removing the EngiQuarters blocks demanded by shields
+            //unlike above (the generator version) this doesnt also subtract pp to power these crew q (since solar panels dont do that)
+            let newPPLimit = ppLimit - polutedEngiQuartersBlocks;
+
+            // the ratio between engines and crew quarters
+            let ratioEtoCQ = this.calcCrewNeeded(engineBlock, 1, true, engineerOverclock) /crewQuartersBlock.other;
+
+            let engineCount = newPPLimit /(ratioEtoCQ+1);
+            let crewQuartersCount = engineCount * ratioEtoCQ;
+
+            let eGenCount = (engineCount*(engineBlock.reqEnergy * this.requiredEnergyMultiplier) + crewQuartersCount*(crewQuartersBlock.reqEnergy * this.requiredEnergyMultiplier) ) / (energySource.other * this.generatedEnergyMultiplier);
+
+            //add polution from shield gens / crew
+            eGenCount += polutedEngiEnergySourceBlocks;
+            crewQuartersCount += polutedEngiQuartersBlocks;
+
+            returnPackage = [eGenCount, engineCount, crewQuartersCount];
+        }
+        return returnPackage;
     };
 
     calcMaxSpeed(engineCount, overclock) {
@@ -223,28 +283,37 @@ export default class shipCalculator {
         let otherWeight = this.otherWeight;
         let totalWeight = otherWeight;
 
+        // this adds running total safely if eGenWeightSheilds is a valid number if not it uses 0 instead
+        // totalWeight += eGenWeightSheilds || 0;
+
         //shields
         let eGenWeightSheilds = this.eGenCountShields * this.palette[energyGen].weight;
-        totalWeight += eGenWeightSheilds;
+        totalWeight += eGenWeightSheilds || 0;
 
         let sGenWeight = this.sGenCount * this.palette.shieldGenerator.weight;
-        totalWeight += sGenWeight;
+        totalWeight += sGenWeight || 0;
 
         this.shieldsTotalWeight = eGenWeightSheilds + sGenWeight;
+
         //engines
         let thrusterWeight = this.thrusterCount * this.palette.thruster.weight;
-        totalWeight += thrusterWeight;
+        totalWeight += thrusterWeight || 0;
 
         let eGenWeightEngines = this.eGenCountEngines * this.palette[energyGen].weight;
-        totalWeight += eGenWeightEngines;
+        totalWeight += eGenWeightEngines || 0;
 
         let engineWeight = this.eCount * this.palette.engine.weight;
-        totalWeight += engineWeight;
+        totalWeight += engineWeight || 0;
 
         let crewQWeight = this.cQCountEngines * this.palette.crewQuarters.weight;
-        totalWeight += crewQWeight;
+        totalWeight += crewQWeight || 0;
 
         this.enginesTotalWeight = thrusterWeight + eGenWeightEngines + engineWeight + crewQWeight;
+
+        //subsystem
+        let subsystemEGenWeight = this.subsystemEGenCount * this.palette[energyGen].weight;
+        totalWeight += subsystemEGenWeight || 0;
+        
         return {
             totalWeight: totalWeight, 
             otherWeight: otherWeight, 
@@ -252,193 +321,8 @@ export default class shipCalculator {
             eGenWeightEngines: eGenWeightEngines, 
             sGenWeight: sGenWeight, 
             engineWeight: engineWeight, 
-            crewQWeight: crewQWeight
+            crewQWeight: crewQWeight,
+            subsystemWeight: subsystemEGenWeight
         };
     }
 };
-
-
-
-//this class holds the current chosen blocks to calculate stats off
-//blocks are set by their material
-//needs to be fed a list of every block
-class palette {
-    constructor(blockList) {
-        this.blockList = blockList;
-
-        //init values
-        this.armor = 'unset';
-        this.engine = 'unset';
-        this.cargoBay = 'unset';
-        this.crewQuarters = 'unset';
-        this.thruster = 'unset';
-        this.directionalThruster = 'unset';
-        this.gyroArray = 'unset';
-        this.inertialDampener = 'unset';
-        this.hangar = 'unset';
-        this.dock = 'unset';
-        this.flightRecorder = 'unset';
-        this.assembly = 'unset';
-        this.torpedoLauncher = 'unset';
-        this.torpedoStorage = 'unset';
-        this.shieldGenerator = 'unset';
-        this.energyContainer = 'unset';
-        this.generator = 'unset';
-        this.integrityFieldGenerator = 'unset';
-        this.computerCore = 'unset';
-        this.hyperspaceCore = 'unset';
-        this.transporter = 'unset';
-        this.academy = 'unset';
-        this.cloningPods = 'unset';
-        this.solarPanel = 'unset';
-    }
-
-    //do not input a value for loopEscape
-    //this function is self calling and loopEscape sets itself to break the loop automatically
-    setType(type, material, BK, opti, best, loopEscape){
-        //check exit / loopEscape condition
-        if (loopEscape == material) { this[type] = this.blockList[material][type] }
-        else { 
-            //set exit condition
-            if (loopEscape == undefined) {loopEscape = material}
-
-            let bipass = false
-
-            //test block validity
-            if (this.blockList[material][type].cost$ == 'N/A') {
-                //check optimization type
-                if (opti == 'processingPower') {
-                    //save temp variables for faster calc
-                    //current material
-                    let newBlock = this.blockList[material][type];
-                    //previous best material
-                    let bestBlock = this.blockList[best][type];
-                    if (newBlock.other >= bestBlock.other) {
-                        // if they are equal check weight efficiency
-                        if (newBlock.other = bestBlock.other) {
-                            //checking weight/output ('other') efficiency
-                            if (
-                                (newBlock.weight/newBlock.other) 
-                                <=
-                                (bestBlock.weight/bestBlock.other)
-                            ){best = material;} //sets current material as new best
-                        }
-                    }
-                }
-                //checking weight optimization type
-                else if (opti == 'weight') {
-                    //current material
-                    let newBlock = this.blockList[material][type];
-                    //previous best material
-                    let bestBlock = this.blockList[best][type];
-                    if (
-                        (newBlock.weight/newBlock.other) 
-                        <=
-                        (bestBlock.weight/bestBlock.other)
-                        ){best = material;} //sets current material as new best
-                }
-            
-                // no optimization - exit
-                else {
-                    this[type] = this.blockList[material][type]
-                    bipass = true; //allows code to end by jumping over loop
-                }
-            }
-            
-            //function loops by call itself
-            //run after failed block or validated
-            if (bipass != true) {
-                //loops down through material levels
-                if      (material == 'avorion') {this.setType(type, 'obonite',  BK, best, opti, loopEscape)}
-                else if (material == 'obonite') {this.setType(type, 'xanion',   BK, best, opti, loopEscape)}
-                else if (material == 'xanion')  {this.setType(type, 'trinium',  BK, best, opti, loopEscape)}
-                else if (material == 'trinium') {this.setType(type, 'naonite',  BK, best, opti, loopEscape)}
-                else if (material == 'naonite') {this.setType(type, 'titanium', BK, best, opti, loopEscape)}
-                else if (material == 'titanium'){this.setType(type, 'iron',     BK, best, opti, loopEscape)}
-                //resets back up to building knowledge level at iron
-                else {this.setType(type, BK, BK, best, opti, loopEscape)}
-            }
-        }
-    }//end of setTypeFunction
-    
-    //calls the setType for all types of block
-    setAll(material, opti, BK){
-        this.setType('armor', material, BK, opti);
-        this.setType('engine', material, BK, opti);
-        this.setType('cargoBay', material, BK, opti);
-        this.setType('crewQuarters', material, BK, opti);
-        this.setType('thruster', material, BK, opti);
-        this.setType('directionalThruster', material, BK, opti);
-        this.setType('gyroArray', material, BK, opti);
-        this.setType('inertialDampener', material, BK, opti);
-        this.setType('hangar', material, BK, opti);
-        this.setType('dock', material, BK, opti);
-        this.setType('flightRecorder', material, BK, opti);
-        this.setType('assembly', material, BK, opti);
-        this.setType('torpedoLauncher', material, BK, opti);
-        this.setType('torpedoStorage', material, BK, opti);
-        this.setType('shieldGenerator', material, BK, opti);
-        this.setType('energyContainer', material, BK, opti);
-        this.setType('generator', material, BK, opti);
-        this.setType('integrityFieldGenerator', material, BK, opti);
-        this.setType('computerCore', material, BK, opti);
-        this.setType('hyperspaceCore', material, BK, opti);
-        this.setType('transporter', material, BK, opti);
-        this.setType('academy', material, BK, opti);
-        this.setType('cloningPods', material, BK, opti);
-        this.setType('solarPanel', material, BK, opti);
-    }
-
-    checkPowerSource(){
-        //shield gen is valid checking power source
-        if (this.generator.other > 0) {return true;}
-        //generator failed attempting solarPanel as backup
-        else {return false;}
-        //there should be no case when solar panels are invalid
-        //simplifying output of this function
-
-        //     console.log('Generator output <= 0')
-        //     console.log('Switching to Solar Panels')
-        //     if (this.palette.solarPanel.other > 0) {return false}
-        //     // no energy gen avaliable - 1st exit of function
-        //     else {
-        //         console.log('Solar Panel output <= 0');
-        //         console.log('shieldCalcHandler: No available power generators');
-        //         return 'error';
-        //     }
-        // }
-    }
-
-    //block palette
-
-    // currently doesnt have premade palettes to pull from
-    // could make custom palettes too
-    // will be similar to material class in blockStats
-    // light will find the most weight effcient per blocks unique output
-    // pp efficient will select the material with highest unique output
-
-    //selects the palette of blocks to calculate stats with based on the Building Knowledge Level
-    selectBlockPalettePreset(optimization) {
-        //light weight determines if the palette should focus on weight efficiency or processing power efficiency
-        //true = weigh efficient
-        //false = processing power efficiency
-        if (optimization == 'weight') {
-            if (this.buildingKnowledge = "iron") {this.palette = ironPaletteLight}
-            else if (this.buildingKnowledge = "titanium") {this.palette = titaniumPaletteLight}
-            else if (this.buildingKnowledge = "naonite") {this.palette = naonitePaletteLight}
-            else if (this.buildingKnowledge = "trinium") {this.palette = triniumPaletteLight}
-            else if (this.buildingKnowledge = "xanion") {this.palette = xanionPaletteLight}
-            else if (this.buildingKnowledge = "ogonite") {this.palette = ogonitePaletteLight}
-            else if (this.buildingKnowledge = "avorion") {this.palette = avorionPaletteLight}
-        }
-        else if(optimization == 'processingPower') {
-            if (this.buildingKnowledge = "iron") {this.palette = ironPalette}
-            else if (this.buildingKnowledge = "titanium") {this.palette = titaniumPalette}
-            else if (this.buildingKnowledge = "naonite") {this.palette = naonitePalette}
-            else if (this.buildingKnowledge = "trinium") {this.palette = triniumPalette}
-            else if (this.buildingKnowledge = "xanion") {this.palette = xanionPalette}
-            else if (this.buildingKnowledge = "ogonite") {this.palette = ogonitePalette}
-            else if (this.buildingKnowledge = "avorion") {this.palette = avorionPalette}
-        }
-    }
-}

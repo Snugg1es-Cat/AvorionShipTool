@@ -52,6 +52,10 @@ import shipCalculator from './shipCalculator.js';
             const spanEngineCrewQ = document.getElementById("outputEngineCrewQ");
             const spanEngineTotalWeight = document.getElementById("outputEngineWeight");
 
+            //other
+            const allGenTypeSpans = document.querySelectorAll(".genType");
+            const spanSubsystemEGenCount = document.getElementById("outputSubsystemGenCount");
+
 
 //event listeners
     //Block Calculator
@@ -104,6 +108,8 @@ import shipCalculator from './shipCalculator.js';
 
         //subsystems
         addNewSubsystemBtn.addEventListener("click", () => {addNewSubsystem();})
+
+        //most of the subsystem event listerners are made lower in the code where they are dynamically made
 
         //Input Allocation Variables
         shieldAllocationTextBox.addEventListener("input", () => {autoSubmit(inputAllocation, ["shieldPP", shieldAllocationTextBox]);})
@@ -203,7 +209,7 @@ import shipCalculator from './shipCalculator.js';
                 const validBK = validMaterials; //idential to valid materials
                 const validPalette = ["processingPower", "weight", "custom"];
             //Subsystem effects
-                const validEffects = ["rechargeRate", "generatedEnergy%", "requiredEnergy+", "requiredEnergy%"];
+                const validEffects = ["rechargeRate", "generatedEnergyPercentage", "requiredEnergyAdditive", "requiredEnergyPercentage"];
 
     function validateDropDown(validInputs, dropBoxValue) {
         //Validates if the value is part of the array otherwise replaces it with an empty value
@@ -423,15 +429,15 @@ import shipCalculator from './shipCalculator.js';
         newEffectOption1.textContent = "Recharge Rate";
         
         let newEffectOption2 = document.createElement("option");
-        newEffectOption2.value = "generatedEnergy%";
+        newEffectOption2.value = "generatedEnergyPercentage";
         newEffectOption2.textContent = "Generated Energy (%)";
         
         let newEffectOption3 = document.createElement("option");
-        newEffectOption3.value = "requiredEnergy+";
+        newEffectOption3.value = "requiredEnergyAdditive";
         newEffectOption3.textContent = "Required Energy (+)";
         
         let newEffectOption4 = document.createElement("option");
-        newEffectOption4.value = "requiredEnergy%";
+        newEffectOption4.value = "requiredEnergyPercentage";
         newEffectOption4.textContent = "Required Energy (%)";
 
         //text box
@@ -492,6 +498,9 @@ import shipCalculator from './shipCalculator.js';
         handleFirstEffectDeleteBtn(parent);
 
         //Add Event Listenters
+        //Drop Box
+        newDropBox.addEventListener("input", () => {runShipCalc();})
+
         //Name Text Box
         textBox.addEventListener("input", () => {autoSubmit(effectTextBoxEvent, [textBox]);});
 
@@ -500,6 +509,8 @@ import shipCalculator from './shipCalculator.js';
             addSubsystemEffect(parent, [newDropBox.value, textBox.value]);
             //save to local storage
             saveAllSubsystems();
+            //run calc
+            runShipCalc();
         })
 
         //Deleting Subsystem
@@ -512,15 +523,25 @@ import shipCalculator from './shipCalculator.js';
 
             //save to local storage
             saveAllSubsystems();
+
+            //run ship calculator
+            runShipCalc();
         })
 
         //save to local storage
         saveAllSubsystems();
     }
+
     function effectTextBoxEvent(textBox) {
-            setOutputAsRegOrPH, [textBox, validateAsNumericInput(textBox.value)];
-            saveAllSubsystems();
-        }
+        //corrects users input
+        setOutputAsRegOrPH(textBox, validateAsNumericInput(textBox.value));
+
+        //save to local storage
+        saveAllSubsystems();
+
+        //run ship calculator
+        runShipCalc();
+    }
 
     function handleFirstEffectDeleteBtn(parent) {
         const effectLiList = parent.children;
@@ -530,6 +551,7 @@ import shipCalculator from './shipCalculator.js';
         else {effectLiList[0].children[3].hidden = false;} //effectLiList[0].children[3] is the delete button (3rd element)
     }
 
+    //retrieves all Subsystems from local storage so it persists between reloads
     function loadAllSubsystems() {
         const JSONSubsystemList = localStorage.getItem("subsystemList");
         const allSubsystems = JSON.parse(JSONSubsystemList);
@@ -538,6 +560,7 @@ import shipCalculator from './shipCalculator.js';
         });
     }
 
+    //saves all Subsystems to local storage so it persists between reloads
     function saveAllSubsystems() {
         const JSONSubsystemList = JSON.stringify(readAllSubsystems());
         //save to local storage
@@ -588,8 +611,35 @@ import shipCalculator from './shipCalculator.js';
         const allSubsystems = readAllSubsystems();
         allSubsystems.forEach(subsystem => {
             const effectsList = subsystem[1];
+            //each subsystem can have multiple effects
             effectsList.forEach(effect => {
-                validateDropDown(effect[0])
+                let validDropBoxValue = validateDropDown(validEffects, effect[0]); //effect[0] is dropBox value
+                let validTextBoxValue = validateAsNumericInput(`${effect[1]}`); //effect[1] is textBox value. Needs to be converted into a string
+                //ignore if invalid. An invalid Text Box Value will resolve to 0
+
+                if (validDropBoxValue != "") {
+                    switch (validDropBoxValue) {
+
+                        //generated energy
+                        //add percentage value
+                        case "generatedEnergyPercentage" :
+                            //div by 100 to get as percentage then add 1 since it's an additive %
+                            ship["generatedEnergyMultiplier"] *= (validTextBoxValue / 100) + 1;
+                            break;
+
+                        //required energy
+                        //add percentage value
+                        case "requiredEnergyPercentage" :
+                            //div by 100 to get as percentage then add 1 since it's an additive %
+                            ship[validDropBoxValue] *= (validTextBoxValue / 100) + 1;
+                            break;
+
+                        //add flat value
+                        case "requiredEnergyAdditive" :
+                            ship[validDropBoxValue] += validTextBoxValue;
+                            break;
+                    }
+                }
             })
         });
     }
@@ -623,6 +673,20 @@ import shipCalculator from './shipCalculator.js';
         spanEngineEGenCount.textContent = ship.eGenCountEngines;
         spanEngineCrewQ.textContent = ship.cQCountEngines;
         spanEngineTotalWeight.textContent = ship.enginesTotalWeight;
+
+        //other
+        spanSubsystemEGenCount.textContent = ship.subsystemEGenCount;
+        
+        //update all generator types to describe what kind of generator is being used
+        if (ship.palette.checkPowerSource()) {
+            allGenTypeSpans.forEach(span => {
+                span.textContent = "Generator"; 
+            });
+        } else {
+            allGenTypeSpans.forEach(span => {
+               span.textContent = "Solar Panel"; 
+            });
+        }
     }
 
 //init code
