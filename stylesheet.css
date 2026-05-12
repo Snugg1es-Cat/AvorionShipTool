@@ -6,7 +6,6 @@ ul {
 
 /*Block Calculator*/
 #blockCalc {
-    background-color: rgb(200, 255, 255);
     border: dashed;
 }
 h2 {
@@ -30,7 +29,6 @@ h2 {
 
 /*Ship Calculator*/
 #shipCalc {
-    background-color: rgb(255, 218, 254);
     border: dashed;
     margin: 1rem;
 }
@@ -42,6 +40,7 @@ h2 {
 
 #subsystemTable {
     margin: auto;
+    margin-top: 1rem;
 }
 
 #systemList {
@@ -98,4 +97,30 @@ h2 {
     visibility: visible;
     transition-delay: 0.75s;
     opacity: 1; 
+}
+
+/*color light mode
+#blockCalc {
+    background-color: rgb(200, 255, 255);
+}
+#shipCalc {
+    background-color: rgb(255, 218, 254);
+}
+*/
+
+/*color light mode*/
+body {
+    background-color: rgb(39, 23, 0);
+    color: rgb(155, 0, 0);
+}
+#blockCalc {
+    background-color: rgb(39, 23, 0);
+}
+#shipCalc {
+    background-color: rgb(39, 23, 0);
+}
+input, select, button {
+    background-color: rgb(39, 23, 0);
+    color: rgb(155, 0, 0);
+    border-color: brown;
 }
