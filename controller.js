@@ -209,7 +209,27 @@ import shipCalculator from './shipCalculator.js';
                 const validBK = validMaterials; //idential to valid materials
                 const validPalette = ["processingPower", "weight", "custom"];
             //Subsystem effects
-                const validEffects = ["rechargeRate", "generatedEnergyPercentage", "requiredEnergyAdditive", "requiredEnergyPercentage"];
+                const validEffects = [
+                    "rechargeRate", 
+                    "generatedEnergyPercentage", 
+                    "requiredEnergyAdditive", 
+                    "requiredEnergyPercentage",
+                    "shieldDurabilityPercentage",
+                    "shieldDurabilityAdditive",
+                    "emergencyRechargePercentage",
+                    "shieldRechargeRateAdditive",
+                    "shieldResistancePercentage",
+                    "energyCapacityPercentage",
+                    "energyChargeDelayPercentage",
+                    "maxVelocityAdditive",
+                    "maxVelocityPercentage",
+                    "accelerationPercentage",
+                    "maxProcessingPowerAdditive",
+                    "hullHPPercentage",
+                    "damageTakenPercentage",
+                    "cargoHoldPercentage",
+                    "cargoHoldAdditive"
+                ];
 
     function validateDropDown(validInputs, dropBoxValue) {
         //Validates if the value is part of the array otherwise replaces it with an empty value
@@ -300,6 +320,7 @@ import shipCalculator from './shipCalculator.js';
         feedShipSubsystemEffects();
         ship.runCalcAll();
         updateAllOutputStats();
+
     }
 
     //updates building Knowledge 
@@ -440,6 +461,66 @@ import shipCalculator from './shipCalculator.js';
         newEffectOption4.value = "requiredEnergyPercentage";
         newEffectOption4.textContent = "Required Energy (%)";
 
+        let newEffectOption5 = document.createElement("option");
+        newEffectOption5.value = "shieldDurabilityPercentage";
+        newEffectOption5.textContent = "Shield Durability (%)";
+
+        let newEffectOption6 = document.createElement("option");
+        newEffectOption6.value = "shieldDurabilityAdditive";
+        newEffectOption6.textContent = "Shield Durability (+)";
+
+        let newEffectOption7 = document.createElement("option");
+        newEffectOption7.value = "emergencyRechargePercentage";
+        newEffectOption7.textContent = "Emergency Recharge (%)";
+
+        let newEffectOption8 = document.createElement("option");
+        newEffectOption8.value = "shieldRechargeRateAdditive";
+        newEffectOption8.textContent = "Shield Recharge Rate (+)";
+
+        let newEffectOption9 = document.createElement("option");
+        newEffectOption9.value = "shieldResistancePercentage";
+        newEffectOption9.textContent = "Shield Resistance (%)";
+
+        let newEffectOption10 = document.createElement("option");
+        newEffectOption10.value = "energyCapacityPercentage";
+        newEffectOption10.textContent = "Energy Capacity (%)";
+
+        let newEffectOption11 = document.createElement("option");
+        newEffectOption11.value = "energyChargeDelayPercentage";
+        newEffectOption11.textContent = "Energy Charge Delay (%)";
+
+        let newEffectOption12 = document.createElement("option");
+        newEffectOption12.value = "maxVelocityAdditive";
+        newEffectOption12.textContent = "Max Velocity (+)";
+
+        let newEffectOption13 = document.createElement("option");
+        newEffectOption13.value = "maxVelocityPercentage";
+        newEffectOption13.textContent = "Max Velocity (%)";
+
+        let newEffectOption14 = document.createElement("option");
+        newEffectOption14.value = "accelerationPercentage";
+        newEffectOption14.textContent = "Acceleration (%)";
+
+        let newEffectOption15 = document.createElement("option");
+        newEffectOption15.value = "maxProcessingPowerAdditive";
+        newEffectOption15.textContent = "Max Processing Power (+)";
+
+        let newEffectOption16 = document.createElement("option");
+        newEffectOption16.value = "hullHPPercentage";
+        newEffectOption16.textContent = "Hull HP (%)";
+
+        let newEffectOption17 = document.createElement("option");
+        newEffectOption17.value = "damageTakenPercentage";
+        newEffectOption17.textContent = "Damage Taken (%)";
+
+        let newEffectOption18 = document.createElement("option");
+        newEffectOption18.value = "cargoHoldPercentage";
+        newEffectOption18.textContent = "Damage Taken (%)";
+
+        let newEffectOption19 = document.createElement("option");
+        newEffectOption19.value = "cargoHoldAdditive";
+        newEffectOption19.textContent = "Cargo Hold (+)";
+
         //text box
         //validate value
         let validEffectValue = validateAsNumericInput(effect[1].toString());
@@ -480,6 +561,21 @@ import shipCalculator from './shipCalculator.js';
         newDropBox.appendChild(newEffectOption2);
         newDropBox.appendChild(newEffectOption3);
         newDropBox.appendChild(newEffectOption4);
+        newDropBox.appendChild(newEffectOption5);
+        newDropBox.appendChild(newEffectOption6);
+        newDropBox.appendChild(newEffectOption7);
+        newDropBox.appendChild(newEffectOption8);
+        newDropBox.appendChild(newEffectOption9);
+        newDropBox.appendChild(newEffectOption10);
+        newDropBox.appendChild(newEffectOption11);
+        newDropBox.appendChild(newEffectOption12);
+        newDropBox.appendChild(newEffectOption13);
+        newDropBox.appendChild(newEffectOption14);
+        newDropBox.appendChild(newEffectOption15);
+        newDropBox.appendChild(newEffectOption16);
+        newDropBox.appendChild(newEffectOption17);
+        newDropBox.appendChild(newEffectOption18);
+        newDropBox.appendChild(newEffectOption19);
 
         //set dropbox
         newDropBox.value = validEffectType;
